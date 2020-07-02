@@ -86,7 +86,7 @@ describe('JsonLdTransformer class', () => {
     it('recipeItem should be set to the recipe item in the response', () => {
       transformer.recipeItem['@type'].should.eql('Recipe');
     });
-  });
+  });;
 
   // (this.meta['@type'] === 'Recipe')
   describe('test response 3', () => {
