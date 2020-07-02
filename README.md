@@ -9,3 +9,5 @@ import scraper from  'dough-scraper';
 ...
 const recipeData = await scraper(url);
 ```
+
+Peer dependencies: `lodash`
