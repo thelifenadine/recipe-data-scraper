@@ -1,6 +1,6 @@
 {
   "name": "dough-scraper",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "web scraper for recipe data",
   "main": "lib/index.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "coverage": "nyc report --reporter=text-lcov | coveralls && nyc report --reporter=lcov"
   },
   "author": "Nadine Kinnen",
-  "license": "ISC",
+  "license": "GNU",
   "dependencies": {
     "axios": "0.19.2",
     "cheerio": "1.0.0-rc.3",
