@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack",
     "test": "mocha './src/**/*.test.js' --require @babel/register --reporter spec || exit 0",
-    "lint": "eslint './src/**/*.js'"
+    "lint": "eslint './src/**/*.js'",
+    "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls"
   },
   "author": "Nadine Kinnen",
   "license": "ISC",
@@ -25,6 +26,7 @@
     "babel-loader": "8.1.0",
     "chai": "4.2.0",
     "clean-webpack-plugin": "3.0.0",
+    "coveralls": "3.1.0",
     "eslint": "7.3.1",
     "eslint-loader": "4.0.2",
     "eslint-plugin-babel": "5.3.1",
