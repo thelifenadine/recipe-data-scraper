@@ -18,6 +18,46 @@ describe('JsonLdTransformer class', () => {
     }).default;
   });
 
+  describe('test response 1: testForData', () => {
+    let transformer;
+    let testMeta;
+
+    before(async () => {
+      testMeta = getMeta(testResponse1);
+
+      const testChtml = [{
+        children: [{ data: JSON.stringify(testMeta), type: 'k' }, {}]
+      }];
+
+      chtmlStub.returns(testChtml);
+      transformer = new myClass(chtmlStub);
+      transformer.testForData();
+    });
+
+    it('meta should be set', () => {
+      transformer.meta.should.eql(testMeta);
+    });
+  });
+
+  describe('test response 1: no data', () => {
+    let transformer;
+
+    before(async () => {
+      const testChtml = [{
+        nodata: [{ nope: '', type: 'k' }, {}]
+      }];
+
+      chtmlStub.returns(testChtml);
+      transformer = new myClass(chtmlStub);
+      transformer.meta = null;
+      transformer.testForData();
+    });
+
+    it('meta should be null', () => {
+      (transformer.meta === null).should.be.true;
+    });
+  });
+
   // this.meta['@graph']
   describe('test response 1', () => {
     let transformer;
@@ -63,5 +103,3 @@ describe('JsonLdTransformer class', () => {
     });
   });
 });
-// trouble testing testForData
-// the JSON.parse seems to throw an error no matter what I do to the response

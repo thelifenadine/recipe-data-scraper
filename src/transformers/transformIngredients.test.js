@@ -46,7 +46,7 @@ describe('transformIngredients', () => {
       }, {
         properties: {
           name: ['butter'],
-          amount: ['½ cup'],
+          amount: ['¾ cup'],
         },
       }];
 
@@ -54,7 +54,7 @@ describe('transformIngredients', () => {
     });
 
     it('the argument should be returned as an array of strings', () => {
-      result.should.eql(['1 lb pasta', '2 cups ice cream', '1/2 cup butter']);
+      result.should.eql(['1 lb pasta', '2 cups ice cream', '3/4 cup butter']);
     });
   });
 });

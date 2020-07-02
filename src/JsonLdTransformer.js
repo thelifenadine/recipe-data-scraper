@@ -1,4 +1,5 @@
 import find from 'lodash/find';
+import get from 'lodash/get';
 import forEach from 'lodash/forEach';
 import logger from './logger';
 import Transformer from './Transformer';
@@ -16,7 +17,10 @@ class JsonLdTransformer extends Transformer{
     forEach(jsonLdFromHtml, item => {
       let contents;
       try {
-        contents = JSON.parse(item.children[0].data);
+        const data = get(item, 'children[0].data');
+        if (data) {
+          contents = JSON.parse(data);
+        }
       } catch (e) {
         logger('something happened with the json parsing', e);
         // Fail silently, in case there are valid tags

@@ -24,7 +24,7 @@ describe('logger', () => {
     });
 
     it('error should be logged', () => {
-      sinon.assert.calledWith(global.console.log, 'test');
+      sinon.assert.calledWith(logStub, 'test');
     });
   });
 
@@ -34,7 +34,7 @@ describe('logger', () => {
     });
 
     it('error should be logged', () => {
-      sinon.assert.calledWith(global.console.log, 'test', { hey: 'ho' });
+      sinon.assert.calledWith(logStub, 'test', { hey: 'ho' });
     });
   });
 });

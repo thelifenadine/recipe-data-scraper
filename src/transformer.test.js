@@ -11,6 +11,7 @@ const propertyMapperMock = {
 describe('Transformer class', () => {
   let myClass;
   const chtmlStub = sinon.stub();
+  const loggerStub = sinon.stub();
 
   const testStub = sinon.stub();
   testStub.returns('hello');
@@ -20,6 +21,7 @@ describe('Transformer class', () => {
     myClass = proxyquire.noCallThru().load('./Transformer', {
       './recipeModelBuilder': (param) => param,
       './propertyMapper': propertyMapperMock,
+      './logger': loggerStub,
     }).default;
 
     transformToFinalModelSpy = sinon.spy(myClass.prototype, 'transformToFinalModel');
@@ -203,6 +205,56 @@ describe('Transformer class', () => {
 
     it('transformToFinalModelSpy should not be called', () => {
       sinon.assert.notCalled(transformToFinalModelSpy);
+    });
+  });
+
+  describe('print()', () => {
+    let transformer;
+
+    before(async () => {
+      class mockClass extends myClass {
+        testForData() {}
+        findRecipeItem() {}
+      }
+
+      transformer = new mockClass(chtmlStub);
+      transformer.recipeItem = {
+        name: 'eat my food',
+        forget: 'me,'
+      };
+      transformer.finalRecipe = {
+        name: 'eat my food my-name',
+      };
+      transformer.print();
+    });
+
+    it('loggerStub should be invoked with the recipeItem if set', () => {
+      sinon.assert.calledWith(loggerStub, transformer.recipeItem);
+    });
+
+    it('loggerStub should be invoked with the finalRecipe if set', () => {
+      sinon.assert.calledWith(loggerStub, transformer.finalRecipe);
+    });
+  });
+
+  describe('print() when nothing is set', () => {
+    let transformer;
+
+    before(async () => {
+      class mockClass extends myClass {
+        testForData() {}
+        findRecipeItem() {}
+      }
+
+      transformer = new mockClass(chtmlStub);
+      transformer.recipeItem = null;
+      transformer.finalRecipe = null;
+      loggerStub.resetHistory();
+      transformer.print();
+    });
+
+    it('loggerStub should not be invoked ', () => {
+      sinon.assert.notCalled(loggerStub);
     });
   });
 });
