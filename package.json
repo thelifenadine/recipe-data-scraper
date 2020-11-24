@@ -1,7 +1,8 @@
 {
-  "name": "dough-scraper",
+  "name": "recipe-data-scraper",
   "version": "1.0.0",
   "description": "web scraper for recipe data",
+  "repository": "github:thelifenadine/recipe-data-scraper",
   "main": "lib/index.js",
   "scripts": {
     "build": "webpack",
