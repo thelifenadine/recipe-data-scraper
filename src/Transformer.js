@@ -7,7 +7,6 @@ class Transformer {
   constructor(chtml) {
     this.chtml = chtml;
 
-    // reset
     this.meta = null;
     this.recipeItem = null;
   }
