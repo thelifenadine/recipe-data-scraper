@@ -15,10 +15,10 @@ async function recipeUrlTester() {
 
   try {
     const data = await scraper(answer);
-    console.log('The Recipe data you requested!')
+    console.log('The Recipe data you requested!');
     console.log(data);
   } catch (error) {
-    console.log('Something went wrong, maybe try a different url')
+    console.log('Something went wrong, maybe try a different url');
   }
 
   const again = question(`Would you like to test another url? (y/n): `);
