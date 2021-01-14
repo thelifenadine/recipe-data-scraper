@@ -5,8 +5,26 @@ A node library that takes a url as an input and scrapes the page for recipe data
 
 Usage:
 ```javascript
-import scraper from  'dough-scraper';
+import scraper from  'recipe-data-scraper';
 ...
 const recipeData = await scraper(url);
 ```
 Peer dependencies: `lodash`
+
+#### Recipe Model:
+| property | type |
+| ----------- | ----------- |
+| url | string |
+| name | string |
+| image | string |
+| description | string |
+| cookTime | string |
+| prepTime | string |
+| totalTime | string |
+| recipeYield | string |
+| recipeIngredients | array of strings |
+| recipeInstructions | array of strings |
+| recipeCategories | array of strings |
+| recipeCuisines | array of strings |
+| recipeTypes | array of strings |
+| keywords | array of strings |
