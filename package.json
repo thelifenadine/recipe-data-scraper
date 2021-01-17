@@ -4,6 +4,7 @@
   "description": "web scraper for recipe data",
   "repository": "github:thelifenadine/recipe-data-scraper",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "build": "webpack",
     "test-old": "mocha './src/**/*.test.js' --require @babel/register --reporter spec || exit 0",
