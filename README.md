@@ -41,3 +41,13 @@ Peer dependencies: `lodash`
 | recipeCuisines | array of strings |
 | recipeTypes | array of strings |
 | keywords | array of strings |
+
+
+# CLI:
+If you want to try this library without a UI, you can clone it locally and run it via the command line.
+
+```
+git clone git@github.com:thelifenadine/recipe-data-scraper.git
+npm install
+npm run urlTester
+```
