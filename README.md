@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/thelifenadine/dough-scraper.svg?branch=master)](https://travis-ci.com/thelifenadine/dough-scraper) [![Coverage Status](https://coveralls.io/repos/github/thelifenadine/dough-scraper/badge.svg?branch=master)](https://coveralls.io/github/thelifenadine/dough-scraper?branch=master)
+[![Build Status](https://travis-ci.com/thelifenadine/recipe-data-scraper.svg?token=zksFH4xCnprxMjskVPuR&branch=master)](https://travis-ci.com/thelifenadine/recipe-data-scraper) [![Coverage Status](https://coveralls.io/repos/github/thelifenadine/recipe-data-scraper/badge.svg?branch=master)](https://coveralls.io/github/thelifenadine/recipe-data-scraper?branch=master)
 
 
 A node library that takes a given url and scrapes that webpage for recipe data. This library supports websites that utilize either [microdata](https://schema.org/Recipe) or [JSON-LD](https://developers.google.com/search/docs/data-types/recipe). The function returns a promise that will either return the recipe data model or null if no recipe is found.
