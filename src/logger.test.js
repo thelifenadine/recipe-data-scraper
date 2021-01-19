@@ -10,7 +10,7 @@ describe('logger', () => {
   const logStub = sinon.stub();
   const configMock = {
     loggingEnabled: true,
-  }
+  };
 
   before(() => {
     global.console.log = logStub;
