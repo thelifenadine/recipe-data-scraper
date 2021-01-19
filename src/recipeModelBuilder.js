@@ -40,11 +40,11 @@ const recipeModelBuilder = (originalProperties) => {
     prepTime, // string
     totalTime, // string
     recipeYield: recipeYield || rYield, // string
-    recipeIngredient: recipeIngredient || recipeIngredients || ingredients || ingredient, // array of strings
+    recipeIngredients: recipeIngredient || recipeIngredients || ingredients || ingredient, // array of strings
     recipeInstructions: recipeInstructions || instructions || step, // array of strings
-    recipeCategory, // array of strings
-    recipeCuisine, // array of strings
-    recipeType, // array of strings
+    recipeCategories: recipeCategory, // array of strings
+    recipeCuisines: recipeCuisine, // array of strings
+    recipeTypes: recipeType, // array of strings
     keywords: keywords || tag, // array of strings
   };
 };

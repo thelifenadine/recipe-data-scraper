@@ -15,8 +15,12 @@ async function recipeUrlTester() {
 
   try {
     const data = await scraper(answer);
-    console.log('The Recipe data you requested!');
-    console.log(data);
+    if (data) {
+      console.log('The Recipe data you requested!');
+      console.log(data);
+    } else {
+      console.log('Could not find recipe data for that url');
+    }
   } catch (error) {
     console.log('Something went wrong, maybe try a different url');
   }
