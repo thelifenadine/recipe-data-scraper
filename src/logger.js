@@ -1,7 +1,7 @@
-const loggingEnabled = true; // TODO: move to env file
+import config from '../config.json';
 
 const logger = (...args) => {
-  if (loggingEnabled) {
+  if (config.loggingEnabled) {
     console.log(...args);
   }
 };

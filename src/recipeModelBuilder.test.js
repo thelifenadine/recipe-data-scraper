@@ -50,11 +50,11 @@ describe('recipeModelBuilder', () => {
       prepTime: 'test_prepTime',
       totalTime: 'test_totalTime',
       recipeYield: 'test_recipeYield',
-      recipeIngredient: 'test_recipeIngredient',
+      recipeIngredients: 'test_recipeIngredient',
       recipeInstructions: 'test_recipeInstructions',
-      recipeCategory: 'test_recipeCategory',
-      recipeCuisine: 'test_recipeCuisine',
-      recipeType: 'test_recipeType',
+      recipeCategories: 'test_recipeCategory',
+      recipeCuisines: 'test_recipeCuisine',
+      recipeTypes: 'test_recipeType',
       keywords: 'test_keywords',
     };
 
@@ -97,11 +97,11 @@ describe('recipeModelBuilder', () => {
       prepTime: 'test_prepTime',
       totalTime: 'test_totalTime',
       recipeYield: 'test_yield',
-      recipeIngredient: 'test_ingredient',
+      recipeIngredients: 'test_ingredient',
       recipeInstructions: 'test_instructions',
-      recipeCategory: 'test_recipeCategory',
-      recipeCuisine: 'test_recipeCuisine',
-      recipeType: 'test_recipeType',
+      recipeCategories: 'test_recipeCategory',
+      recipeCuisines: 'test_recipeCuisine',
+      recipeTypes: 'test_recipeType',
       keywords: 'test_tag',
     };
 
