@@ -1,6 +1,6 @@
 {
   "name": "recipe-data-scraper",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "web scraper for recipe data",
   "repository": "github:thelifenadine/recipe-data-scraper",
   "main": "lib/index.js",
