@@ -8,10 +8,10 @@ npm install recipe-data-scraper
 
 Example Usage:
 ```javascript
-import scraper from  'recipe-data-scraper';
+import recipeDataScraper from  'recipe-data-scraper';
 // ...
 const recipeImporter = async (req, res, next) {
-    const recipe = await scraper(url); // pass a full url that contains a recipe
+    const recipe = await recipeDataScraper(url); // pass a full url that contains a recipe
 
     if (!recipe) {
         res.status(500).json({ message: 'Cound not find recipe data' });

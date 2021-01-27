@@ -1,5 +1,5 @@
 import { question } from 'readline-sync';
-import scraper from '../src/main';
+import recipeDataScraper from '../src/main';
 
 async function recipeUrlTester() {
   console.log(' - - - - - - - - - - - - - - - - -');
@@ -14,7 +14,7 @@ async function recipeUrlTester() {
   console.log(`Getting Recipe Data...`);
 
   try {
-    const data = await scraper(answer);
+    const data = await recipeDataScraper(answer);
     if (data) {
       console.log('The Recipe data you requested!');
       console.log(data);
