@@ -47,7 +47,6 @@ describe('Scraper class', () => {
   });
 
   describe('constructor for a class missing testForMetadata', () => {
-    let scraper;
     let error = '';
 
     before(async () => {
@@ -56,7 +55,7 @@ describe('Scraper class', () => {
       }
 
       try {
-        scraper = new mockClass(chtmlStub);
+        new mockClass(chtmlStub);
       } catch (e) {
         error = e;
       }
@@ -64,11 +63,10 @@ describe('Scraper class', () => {
 
     it('should throw an error', () => {
       error.should.eql({ message: 'testForMetadata function must be implemented by child class' });
-    })
+    });
   });
 
   describe('constructor for a class missing findRecipeItem', () => {
-    let scraper;
     let error = '';
 
     before(async () => {
@@ -77,7 +75,7 @@ describe('Scraper class', () => {
       }
 
       try {
-        scraper = new mockClass(chtmlStub);
+        new mockClass(chtmlStub);
       } catch (e) {
         error = e;
       }
@@ -85,7 +83,7 @@ describe('Scraper class', () => {
 
     it('should throw an error', () => {
       error.should.eql({ message: 'findRecipeItem function must be implemented by child class' });
-    })
+    });
   });
 
   describe('getRecipe', () => {
@@ -110,7 +108,7 @@ describe('Scraper class', () => {
 
     after(() => {
       transformToFinalModelSpy.resetHistory();
-    })
+    });
 
     it('testForMetadata should set the meta', () => {
       scraper.meta.should.eql('something');
