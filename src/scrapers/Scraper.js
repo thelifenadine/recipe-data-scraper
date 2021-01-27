@@ -4,7 +4,7 @@ import recipeModelBuilder from '../recipeModelBuilder';
 import logger from '../logger';
 
 /*
-  class to be extended by scraper transformer classes
+  class to be extended by scraper classes
     the following must be implemented by the child class:
       testForMetadata:
         this function scrapes the type of metadata particular to the class
