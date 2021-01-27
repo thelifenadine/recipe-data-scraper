@@ -3,6 +3,8 @@
 
 A node library that takes a given url and scrapes that webpage for recipe data. This library supports websites that utilize either [microdata](https://schema.org/Recipe) or [JSON-LD](https://developers.google.com/search/docs/data-types/recipe). The function returns a promise where on success will return the recipe and on fail will throw an error with the message: 'Could not find recipe data'
 
+Peer dependencies: `lodash`
+
 ```
 npm install recipe-data-scraper
 ```
@@ -32,8 +34,6 @@ recipeDataScraper(url)
   .then(recipe => res.json({ recipe }))
   .catch(err => res.status(500).json({ message: err.message }))
 ```
-
-Peer dependencies: `lodash`
 
 
 #### Recipe Model:
