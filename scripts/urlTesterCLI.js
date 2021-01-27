@@ -11,7 +11,7 @@ async function recipeUrlTester() {
     process.exit(1);
   }
 
-  console.log(`Getting Recipe Data...`);
+  console.log(`Looking for Recipe Data...`);
 
   try {
     const data = await recipeDataScraper(answer);

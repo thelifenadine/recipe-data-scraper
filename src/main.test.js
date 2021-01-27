@@ -150,8 +150,8 @@ describe('scraper(url)', () => {
     });
   });
 
-  describe('test expected behavior when nothing is returned', () => {
-    let result;
+  describe('test expected behavior when no recipe data is found', () => {
+    let errorMessage;
     const testUrl = 'https://someurl.test2';
     const mockAxiosResp = { data: '<some html />' };
     const mockChtmlResp = { some: 'response' };
@@ -161,10 +161,14 @@ describe('scraper(url)', () => {
       cheerioStub.load.returns(mockChtmlResp);
       getRecipeDataStub.withArgs(JsonLdScraperStub, mockChtmlResp, testUrl)
         .returns(null);
-
       getRecipeDataStub.withArgs(MicrodataScraperStub, mockChtmlResp, testUrl)
         .returns(null);
-      result = await scraper(testUrl);
+
+      try {
+        await scraper(testUrl);
+      } catch (error) {
+        errorMessage = error.message;
+      }
     });
 
     it('axios was invoked with the url', () => {
@@ -183,8 +187,41 @@ describe('scraper(url)', () => {
       sinon.assert.calledWith(getRecipeDataStub, MicrodataScraperStub, mockChtmlResp, testUrl);
     });
 
-    it('result should be null when neither class return data', () => {
-      (result === null).should.be.true;
+    it('error should be caught with correct message', () => {
+      errorMessage.should.eql('Could not find recipe data');
+    });
+  });
+
+  describe('test expected behavior when the axios call fails', () => {
+    let errorMessage;
+    const testUrl = 'https://someurl.test3';
+
+    before(async () => {
+      axiosStub.withArgs(testUrl).throws();
+      cheerioStub.load.reset();
+      getRecipeDataStub.reset();
+
+      try {
+        await scraper(testUrl);
+      } catch (error) {
+        errorMessage = error.message;
+      }
+    });
+
+    it('axios was invoked with the url', () => {
+      sinon.assert.calledWith(axiosStub, testUrl);
+    });
+
+    it('cheerio.load will not be invoked', () => {
+      sinon.assert.notCalled(cheerioStub.load);
+    });
+
+    it('getRecipeData will not be invoked', () => {
+      sinon.assert.notCalled(getRecipeDataStub);
+    });
+
+    it('error should be caught with correct message', () => {
+      errorMessage.should.eql('Could not find recipe data');
     });
   });
 });
