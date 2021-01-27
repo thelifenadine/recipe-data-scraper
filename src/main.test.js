@@ -66,7 +66,7 @@ describe('scraper(url)', () => {
   const JsonLdTransformerStub = sinon.stub();
 
   before(() => {
-    scraper = proxyquire.noCallThru().load('./scraper', {
+    scraper = proxyquire.noCallThru().load('./main', {
       'axios': axiosStub,
       'cheerio': cheerioStub,
       './getRecipeData': getRecipeDataStub,

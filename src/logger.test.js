@@ -3,28 +3,31 @@ import { should } from "chai";
 import sinon from 'sinon';
 should();
 
-const original = global.console.log;
+const originalConsoleLog = global.console.log;
+const originalEnvLoggingEnabled = process.env.LOGGING_ENABLED;
 
 describe('logger', () => {
   let logger;
   const logStub = sinon.stub();
-  const configMock = {
-    loggingEnabled: true,
-  };
+  let initLogger;
 
   before(() => {
     global.console.log = logStub;
-    logger = proxyquire.noCallThru().load('./logger', {
-      '../config.json': configMock,
-    }).default;
+
+    initLogger = (isLoggingEnabled) => {
+      process.env.LOGGING_ENABLED = isLoggingEnabled;
+      return proxyquire.noCallThru().load('./logger', {}).default
+    };
   });
 
   after(() => {
-    global.console.log = original;
+    global.console.log = originalConsoleLog;
+    process.env.LOGGING_ENABLED = originalEnvLoggingEnabled;
   });
 
   describe('expected behavior when passed a string', () => {
     before(() => {
+      logger = initLogger('true');
       logger('test');
     });
 
@@ -35,6 +38,7 @@ describe('logger', () => {
 
   describe('expected behavior when passed multiple arguments', () => {
     before(() => {
+      logger = initLogger('true');
       logger('test', { hey: 'ho' });
     });
 
@@ -43,10 +47,10 @@ describe('logger', () => {
     });
   });
 
-  describe('expected behavior when logging is disabled', () => {
+  describe('expected behavior when logging is not enabled', () => {
     before(() => {
       logStub.reset();
-      configMock.loggingEnabled = false,
+      logger = initLogger();
       logger('test');
     });
 

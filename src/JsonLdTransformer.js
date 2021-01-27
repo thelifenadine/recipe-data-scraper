@@ -4,13 +4,13 @@ import forEach from 'lodash/forEach';
 import logger from './logger';
 import Transformer from './Transformer';
 
-class JsonLdTransformer extends Transformer{
+class JsonLdTransformer extends Transformer {
   constructor(chtml) {
     super(chtml);
     this.type = 'jsonld';
   }
 
-  testForData() {
+  testForMetadata() {
     var json = [];
     const jsonLdFromHtml = this.chtml('script[type="application/ld+json"]');
 
@@ -22,7 +22,7 @@ class JsonLdTransformer extends Transformer{
           contents = JSON.parse(data);
         }
       } catch (e) {
-        logger('something happened with the json parsing', e);
+        logger('JsonLd: error parsing the json data', e);
         // Fail silently, in case there are valid tags
         return;
       }
@@ -32,7 +32,7 @@ class JsonLdTransformer extends Transformer{
     });
 
     if (json.length === 0) {
-      logger('Error("No JSON-LD valid script tags present on page")');
+      logger('Error: No JSON-LD valid script tags present on page');
       return;
     }
 

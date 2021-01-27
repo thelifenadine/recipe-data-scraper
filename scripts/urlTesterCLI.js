@@ -1,5 +1,5 @@
 import { question } from 'readline-sync';
-import scraper from '../src/scraper';
+import scraper from '../src/main';
 
 async function recipeUrlTester() {
   console.log(' - - - - - - - - - - - - - - - - -');

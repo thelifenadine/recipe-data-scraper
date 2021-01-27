@@ -7,12 +7,13 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "webpack",
+    "build-watch": "webpack -w",
     "test-old": "mocha './src/**/*.test.js' --require @babel/register --reporter spec || exit 0",
     "lint": "eslint './src/**/*.js'",
     "test": "cross-env NODE_ENV=test nyc mocha './src/**/*.test.js' --exit",
     "coveralls": "cat ./coverage/lcov.info | node ./node_modules/coveralls/bin/coveralls.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls && nyc report --reporter=lcov",
-    "urlTester": "babel-node ./scripts/urlTesterCLI"
+    "test-url": "cross-env LOGGING_ENABLED=true babel-node ./scripts/urlTesterCLI"
   },
   "author": "Nadine Kinnen",
   "license": "GNU",
@@ -33,6 +34,7 @@
     "babel-plugin-istanbul": "6.0.0",
     "chai": "4.2.0",
     "clean-webpack-plugin": "3.0.0",
+    "compression-webpack-plugin": "3.1.0",
     "coveralls": "3.1.0",
     "cross-env": "7.0.2",
     "eslint": "7.3.1",

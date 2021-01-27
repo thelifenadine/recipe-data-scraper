@@ -18,7 +18,7 @@ describe('JsonLdTransformer class', () => {
     }).default;
   });
 
-  describe('test response 1: testForData', () => {
+  describe('test response 1: testForMetadata', () => {
     let transformer;
     let testMeta;
 
@@ -31,7 +31,7 @@ describe('JsonLdTransformer class', () => {
 
       chtmlStub.returns(testChtml);
       transformer = new myClass(chtmlStub);
-      transformer.testForData();
+      transformer.testForMetadata();
     });
 
     it('meta should be set', () => {
@@ -50,7 +50,7 @@ describe('JsonLdTransformer class', () => {
       chtmlStub.returns(testChtml);
       transformer = new myClass(chtmlStub);
       transformer.meta = null;
-      transformer.testForData();
+      transformer.testForMetadata();
     });
 
     it('meta should be null', () => {

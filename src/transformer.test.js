@@ -31,10 +31,15 @@ describe('Transformer class', () => {
     let transformer;
 
     before(async () => {
-      transformer = new myClass(chtmlStub);
+      class mockClass extends myClass {
+        testForMetadata() {}
+        findRecipeItem() {}
+      }
+
+      transformer = new mockClass(chtmlStub);
     });
 
-    it('should set the intial values', () => {
+    it('should set the initial values', () => {
       transformer.chtml.should.eql(chtmlStub);
       (transformer.meta === null).should.be.true;
       (transformer.recipeItem === null).should.be.true;
@@ -46,7 +51,7 @@ describe('Transformer class', () => {
 
     before(async () => {
       class mockClass extends myClass {
-        testForData() {
+        testForMetadata() {
           this.meta = 'something';
         }
 
@@ -61,7 +66,7 @@ describe('Transformer class', () => {
       transformer.getRecipe();
     });
 
-    it('testForData should set the meta', () => {
+    it('testForMetadata should set the meta', () => {
       transformer.meta.should.eql('something');
     });
 
@@ -79,7 +84,7 @@ describe('Transformer class', () => {
 
     before(async () => {
       class mockClass extends myClass {
-        testForData() {}
+        testForMetadata() {}
 
         findRecipeItem() {}
       }
@@ -113,7 +118,7 @@ describe('Transformer class', () => {
           this.type = 'tester';
         }
 
-        testForData() {
+        testForMetadata() {
           // this.meta is null
         }
 
@@ -165,7 +170,7 @@ describe('Transformer class', () => {
           this.type = 'tester-2';
         }
 
-        testForData() {
+        testForMetadata() {
           this.meta = 'something-meta';
         }
 
@@ -213,7 +218,7 @@ describe('Transformer class', () => {
 
     before(async () => {
       class mockClass extends myClass {
-        testForData() {}
+        testForMetadata() {}
         findRecipeItem() {}
       }
 
@@ -242,7 +247,7 @@ describe('Transformer class', () => {
 
     before(async () => {
       class mockClass extends myClass {
-        testForData() {}
+        testForMetadata() {}
         findRecipeItem() {}
       }
 

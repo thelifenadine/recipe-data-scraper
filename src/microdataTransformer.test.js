@@ -30,7 +30,7 @@ describe('MicrodataTransformer class', () => {
     before(async () => {
       microdataStub.toJson.returns(testResponse1);
       transformer = new myClass(chtmlStub);
-      transformer.testForData();
+      transformer.testForMetadata();
       transformer.findRecipeItem();
     });
 
@@ -49,7 +49,7 @@ describe('MicrodataTransformer class', () => {
     before(async () => {
       microdataStub.toJson.returns(testResponse3);
       transformer = new myClass(chtmlStub);
-      transformer.testForData();
+      transformer.testForMetadata();
       transformer.findRecipeItem();
     });
 
@@ -72,7 +72,7 @@ describe('MicrodataTransformer class', () => {
     before(async () => {
       microdataStub.toJson.returns(testResponse4);
       transformer = new myClass(chtmlStub);
-      transformer.testForData();
+      transformer.testForMetadata();
     });
 
     it('meta should be null', () => {
@@ -86,7 +86,7 @@ describe('MicrodataTransformer class', () => {
     before(async () => {
       microdataStub.toJson.returns(testResponseFake);
       transformer = new myClass(chtmlStub);
-      transformer.testForData();
+      transformer.testForMetadata();
       transformer.findRecipeItem();
     });
 

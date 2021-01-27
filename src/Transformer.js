@@ -3,16 +3,36 @@ import propertyMapper from './propertyMapper';
 import recipeModelBuilder from './recipeModelBuilder';
 import logger from './logger';
 
+/*
+  class to be extended by scraper transformer classes
+    the following must be implemented by the child class:
+      testForMetadata:
+        this function scrapes the page for a particular type of metadata
+      findRecipeItem
+        this function parses the recipe from the metadata
+*/
 class Transformer {
   constructor(chtml) {
     this.chtml = chtml;
 
     this.meta = null;
     this.recipeItem = null;
+
+    if (!this.testForMetadata) {
+      throw {
+        message: 'testForMetadata function must be implemented by child class',
+      };
+    }
+
+    if (!this.findRecipeItem) {
+      throw {
+        message: 'findRecipeItem function must be implemented by child class',
+      };
+    }
   }
 
   getRecipe() {
-    this.testForData();
+    this.testForMetadata();
     if (!this.meta) {
       throw {
         message: 'no meta data was found',
