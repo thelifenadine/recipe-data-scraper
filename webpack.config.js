@@ -1,7 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const CompressionPlugin = require('compression-webpack-plugin');
 
 module.exports = {
   mode: 'production',
@@ -32,13 +31,12 @@ module.exports = {
     libraryTarget: 'umd',
   },
   plugins: [
+    new CleanWebpackPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('production')
       }
     }),
-    new CleanWebpackPlugin(),
-    new CompressionPlugin(),
   ],
   target: 'node',
 };

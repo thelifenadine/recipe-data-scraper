@@ -8,7 +8,7 @@ const propertyMapperMock = {
   photo: (value) => (`${value} photo-value`),
 };
 
-describe('Transformer class', () => {
+describe('Scraper class', () => {
   let myClass;
   const chtmlStub = sinon.stub();
   const loggerStub = sinon.stub();
@@ -18,36 +18,78 @@ describe('Transformer class', () => {
   let transformToFinalModelSpy;
 
   before(() => {
-    myClass = proxyquire.noCallThru().load('./Transformer', {
-      './recipeModelBuilder': (param) => param,
-      './propertyMapper': propertyMapperMock,
-      './logger': loggerStub,
+    myClass = proxyquire.noCallThru().load('./Scraper', {
+      '../recipeModelBuilder': (param) => param,
+      '../propertyMapper': propertyMapperMock,
+      '../logger': loggerStub,
     }).default;
 
     transformToFinalModelSpy = sinon.spy(myClass.prototype, 'transformToFinalModel');
   });
 
-  describe('constructor', () => {
-    let transformer;
+  describe('constructor with a valid class', () => {
+    let scraper;
 
     before(async () => {
       class mockClass extends myClass {
-        testForMetadata() {}
-        findRecipeItem() {}
+        testForMetadata() { }
+        findRecipeItem() { }
       }
 
-      transformer = new mockClass(chtmlStub);
+      scraper = new mockClass(chtmlStub);
     });
 
     it('should set the initial values', () => {
-      transformer.chtml.should.eql(chtmlStub);
-      (transformer.meta === null).should.be.true;
-      (transformer.recipeItem === null).should.be.true;
+      scraper.chtml.should.eql(chtmlStub);
+      (scraper.meta === null).should.be.true;
+      (scraper.recipeItem === null).should.be.true;
     });
   });
 
+  describe('constructor for a class missing testForMetadata', () => {
+    let scraper;
+    let error = '';
+
+    before(async () => {
+      class mockClass extends myClass {
+        findRecipeItem() { }
+      }
+
+      try {
+        scraper = new mockClass(chtmlStub);
+      } catch (e) {
+        error = e;
+      }
+    });
+
+    it('should throw an error', () => {
+      error.should.eql({ message: 'testForMetadata function must be implemented by child class' });
+    })
+  });
+
+  describe('constructor for a class missing findRecipeItem', () => {
+    let scraper;
+    let error = '';
+
+    before(async () => {
+      class mockClass extends myClass {
+        testForMetadata() { }
+      }
+
+      try {
+        scraper = new mockClass(chtmlStub);
+      } catch (e) {
+        error = e;
+      }
+    });
+
+    it('should throw an error', () => {
+      error.should.eql({ message: 'findRecipeItem function must be implemented by child class' });
+    })
+  });
+
   describe('getRecipe', () => {
-    let transformer;
+    let scraper;
 
     before(async () => {
       class mockClass extends myClass {
@@ -62,16 +104,20 @@ describe('Transformer class', () => {
         }
       }
 
-      transformer = new mockClass(chtmlStub);
-      transformer.getRecipe();
+      scraper = new mockClass(chtmlStub);
+      scraper.getRecipe();
     });
 
+    after(() => {
+      transformToFinalModelSpy.resetHistory();
+    })
+
     it('testForMetadata should set the meta', () => {
-      transformer.meta.should.eql('something');
+      scraper.meta.should.eql('something');
     });
 
     it('findRecipeItem should set the recipeItem', () => {
-      transformer.recipeItem.should.eql({ hi: 'food n stuff' });
+      scraper.recipeItem.should.eql({ hi: 'food n stuff' });
     });
 
     it('transformToFinalModelSpy should be invoked', () => {
@@ -80,26 +126,25 @@ describe('Transformer class', () => {
   });
 
   describe('transformToFinalModel', () => {
-    let transformer;
+    let scraper;
 
     before(async () => {
       class mockClass extends myClass {
         testForMetadata() {}
-
         findRecipeItem() {}
       }
 
-      transformer = new mockClass(chtmlStub);
-      transformer.recipeItem = {
+      scraper = new mockClass(chtmlStub);
+      scraper.recipeItem = {
         name: 'eat my food',
         photo: 'take my pic',
         forget: 'me,'
       };
-      transformer.transformToFinalModel();
+      scraper.transformToFinalModel();
     });
 
     it('finalRecipe should be mapped from the recipeItem', () => {
-      transformer.finalRecipe.should.eql({
+      scraper.finalRecipe.should.eql({
         name: 'eat my food my-name',
         photo: 'take my pic photo-value',
       });
@@ -107,7 +152,7 @@ describe('Transformer class', () => {
   });
 
   describe('getRecipe where no meta has been set', () => {
-    let transformer;
+    let scraper;
     let error;
 
     before(async () => {
@@ -129,10 +174,10 @@ describe('Transformer class', () => {
         }
       }
 
-      transformer = new mockClass(chtmlStub);
+      scraper = new mockClass(chtmlStub);
 
       try {
-        transformer.getRecipe();
+        scraper.getRecipe();
       } catch (e) {
         error = e;
       }
@@ -146,11 +191,11 @@ describe('Transformer class', () => {
     });
 
     it('meta should not be set', () => {
-      (transformer.meta === null).should.be.true;
+      (scraper.meta === null).should.be.true;
     });
 
     it('recipeItem should not be set', () => {
-      (transformer.recipeItem === null).should.be.true;
+      (scraper.recipeItem === null).should.be.true;
     });
 
     it('transformToFinalModelSpy should not be called', () => {
@@ -159,7 +204,7 @@ describe('Transformer class', () => {
   });
 
   describe('getRecipe where no recipeItem has been set', () => {
-    let transformer;
+    let scraper;
     let error;
 
     before(async () => {
@@ -177,10 +222,10 @@ describe('Transformer class', () => {
         findRecipeItem() {}
       }
 
-      transformer = new mockClass(chtmlStub);
+      scraper = new mockClass(chtmlStub);
 
       try {
-        transformer.getRecipe();
+        scraper.getRecipe();
       } catch (e) {
         error = e;
       }
@@ -194,11 +239,11 @@ describe('Transformer class', () => {
     });
 
     it('meta should be set', () => {
-      transformer.meta.should.eql('something-meta');
+      scraper.meta.should.eql('something-meta');
     });
 
     it('recipeItem should not be set', () => {
-      (transformer.recipeItem === null).should.be.true;
+      (scraper.recipeItem === null).should.be.true;
     });
 
     it('no recipeItem error should be thrown', () => {
@@ -214,7 +259,7 @@ describe('Transformer class', () => {
   });
 
   describe('print()', () => {
-    let transformer;
+    let scraper;
 
     before(async () => {
       class mockClass extends myClass {
@@ -222,28 +267,28 @@ describe('Transformer class', () => {
         findRecipeItem() {}
       }
 
-      transformer = new mockClass(chtmlStub);
-      transformer.recipeItem = {
+      scraper = new mockClass(chtmlStub);
+      scraper.recipeItem = {
         name: 'eat my food',
         forget: 'me,'
       };
-      transformer.finalRecipe = {
+      scraper.finalRecipe = {
         name: 'eat my food my-name',
       };
-      transformer.print();
+      scraper.print();
     });
 
     it('loggerStub should be invoked with the recipeItem if set', () => {
-      sinon.assert.calledWith(loggerStub, transformer.recipeItem);
+      sinon.assert.calledWith(loggerStub, scraper.recipeItem);
     });
 
     it('loggerStub should be invoked with the finalRecipe if set', () => {
-      sinon.assert.calledWith(loggerStub, transformer.finalRecipe);
+      sinon.assert.calledWith(loggerStub, scraper.finalRecipe);
     });
   });
 
   describe('print() when nothing is set', () => {
-    let transformer;
+    let scraper;
 
     before(async () => {
       class mockClass extends myClass {
@@ -251,11 +296,11 @@ describe('Transformer class', () => {
         findRecipeItem() {}
       }
 
-      transformer = new mockClass(chtmlStub);
-      transformer.recipeItem = null;
-      transformer.finalRecipe = null;
+      scraper = new mockClass(chtmlStub);
+      scraper.recipeItem = null;
+      scraper.finalRecipe = null;
       loggerStub.resetHistory();
-      transformer.print();
+      scraper.print();
     });
 
     it('loggerStub should not be invoked ', () => {

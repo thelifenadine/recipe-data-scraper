@@ -1,14 +1,14 @@
 import axios from 'axios';
 import cheerio from 'cheerio';
-import MicrodataTransformer from './MicrodataTransformer';
-import JsonLdTransformer from './JsonLdTransformer';
+import MicrodataScraper from './scrapers/MicrodataScraper';
+import JsonLdScraper from './scrapers/JsonLdScraper';
 import getRecipeData from './getRecipeData';
 
 export default async (url) => {
   const resp = await axios(url);
   const chtml = cheerio.load(resp.data);
 
-  const jsonLdRecipe = getRecipeData(JsonLdTransformer, chtml, url);
+  const jsonLdRecipe = getRecipeData(JsonLdScraper, chtml, url);
   if (jsonLdRecipe) {
     return {
       ...jsonLdRecipe,
@@ -16,7 +16,7 @@ export default async (url) => {
     };
   }
 
-  const microdataRecipe = getRecipeData(MicrodataTransformer, chtml, url);
+  const microdataRecipe = getRecipeData(MicrodataScraper, chtml, url);
   if (microdataRecipe) {
     return {
       ...microdataRecipe,

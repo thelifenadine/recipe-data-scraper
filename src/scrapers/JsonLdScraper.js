@@ -1,10 +1,10 @@
 import find from 'lodash/find';
 import get from 'lodash/get';
 import forEach from 'lodash/forEach';
-import logger from './logger';
-import Transformer from './Transformer';
+import logger from '../logger';
+import Scraper from './Scraper';
 
-class JsonLdTransformer extends Transformer {
+class JsonLdScraper extends Scraper {
   constructor(chtml) {
     super(chtml);
     this.type = 'jsonld';
@@ -52,4 +52,4 @@ class JsonLdTransformer extends Transformer {
   }
 }
 
-export default JsonLdTransformer;
+export default JsonLdScraper;

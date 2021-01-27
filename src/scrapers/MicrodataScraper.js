@@ -1,8 +1,8 @@
 import find from 'lodash/find';
 import microdata from 'microdata-node';
-import Transformer from './Transformer';
+import Scraper from './Scraper';
 
-class MicrodataScraper extends Transformer {
+class MicrodataScraper extends Scraper {
   constructor(chtml) {
     super(chtml);
     this.type = 'microdata';

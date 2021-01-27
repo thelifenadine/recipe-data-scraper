@@ -62,16 +62,16 @@ describe('scraper(url)', () => {
     load: sinon.stub(),
   };
   const getRecipeDataStub = sinon.stub();
-  const MicrodataTransformerStub = sinon.stub();
-  const JsonLdTransformerStub = sinon.stub();
+  const MicrodataScraperStub = sinon.stub();
+  const JsonLdScraperStub = sinon.stub();
 
   before(() => {
     scraper = proxyquire.noCallThru().load('./main', {
       'axios': axiosStub,
       'cheerio': cheerioStub,
       './getRecipeData': getRecipeDataStub,
-      './JsonLdTransformer': JsonLdTransformerStub,
-      './MicrodataTransformer': MicrodataTransformerStub,
+      './scrapers/JsonLdScraper': JsonLdScraperStub,
+      './scrapers/MicrodataScraper': MicrodataScraperStub,
     }).default;
   });
 
@@ -85,7 +85,7 @@ describe('scraper(url)', () => {
     before(async () => {
       axiosStub.withArgs(testUrl).returns(mockAxiosResp);
       cheerioStub.load.returns(mockChtmlResp);
-      getRecipeDataStub.withArgs(JsonLdTransformerStub, mockChtmlResp, testUrl)
+      getRecipeDataStub.withArgs(JsonLdScraperStub, mockChtmlResp, testUrl)
         .returns(mockRecipeJsonLd);
       result = await scraper(testUrl);
     });
@@ -99,11 +99,11 @@ describe('scraper(url)', () => {
     });
 
     it('getRecipeData was invoked with the class, etc', () => {
-      sinon.assert.calledWith(getRecipeDataStub, JsonLdTransformerStub, mockChtmlResp, testUrl);
+      sinon.assert.calledWith(getRecipeDataStub, JsonLdScraperStub, mockChtmlResp, testUrl);
     });
 
-    it('getRecipeData was NOT invoked with the MicrodataTransformerStub class, etc', () => {
-      sinon.assert.neverCalledWithMatch(getRecipeDataStub, MicrodataTransformerStub, mockChtmlResp, testUrl);
+    it('getRecipeData was NOT invoked with the MicrodataScraperStub class, etc', () => {
+      sinon.assert.neverCalledWithMatch(getRecipeDataStub, MicrodataScraperStub, mockChtmlResp, testUrl);
     });
 
     it('result should equal json-ld response and the url', () => {
@@ -121,10 +121,10 @@ describe('scraper(url)', () => {
     before(async () => {
       axiosStub.withArgs(testUrl).returns(mockAxiosResp);
       cheerioStub.load.returns(mockChtmlResp);
-      getRecipeDataStub.withArgs(JsonLdTransformerStub, mockChtmlResp, testUrl)
+      getRecipeDataStub.withArgs(JsonLdScraperStub, mockChtmlResp, testUrl)
         .returns(null);
 
-      getRecipeDataStub.withArgs(MicrodataTransformerStub, mockChtmlResp, testUrl)
+      getRecipeDataStub.withArgs(MicrodataScraperStub, mockChtmlResp, testUrl)
         .returns(mockRecipeMicrodata);
       result = await scraper(testUrl);
     });
@@ -138,11 +138,11 @@ describe('scraper(url)', () => {
     });
 
     it('getRecipeData was invoked with the class, etc', () => {
-      sinon.assert.calledWith(getRecipeDataStub, JsonLdTransformerStub, mockChtmlResp, testUrl);
+      sinon.assert.calledWith(getRecipeDataStub, JsonLdScraperStub, mockChtmlResp, testUrl);
     });
 
     it('getRecipeData was invoked with the class, etc', () => {
-      sinon.assert.calledWith(getRecipeDataStub, MicrodataTransformerStub, mockChtmlResp, testUrl);
+      sinon.assert.calledWith(getRecipeDataStub, MicrodataScraperStub, mockChtmlResp, testUrl);
     });
 
     it('result should equal json-ld response and the url', () => {
@@ -159,10 +159,10 @@ describe('scraper(url)', () => {
     before(async () => {
       axiosStub.withArgs(testUrl).returns(mockAxiosResp);
       cheerioStub.load.returns(mockChtmlResp);
-      getRecipeDataStub.withArgs(JsonLdTransformerStub, mockChtmlResp, testUrl)
+      getRecipeDataStub.withArgs(JsonLdScraperStub, mockChtmlResp, testUrl)
         .returns(null);
 
-      getRecipeDataStub.withArgs(MicrodataTransformerStub, mockChtmlResp, testUrl)
+      getRecipeDataStub.withArgs(MicrodataScraperStub, mockChtmlResp, testUrl)
         .returns(null);
       result = await scraper(testUrl);
     });
@@ -175,12 +175,12 @@ describe('scraper(url)', () => {
       sinon.assert.calledWith(cheerioStub.load, mockAxiosResp.data);
     });
 
-    it('getRecipeData was invoked with the JsonLdTransformerStub class, etc', () => {
-      sinon.assert.calledWith(getRecipeDataStub, JsonLdTransformerStub, mockChtmlResp, testUrl);
+    it('getRecipeData was invoked with the JsonLdScraperStub class, etc', () => {
+      sinon.assert.calledWith(getRecipeDataStub, JsonLdScraperStub, mockChtmlResp, testUrl);
     });
 
-    it('getRecipeData was invoked with the MicrodataTransformerStub class, etc', () => {
-      sinon.assert.calledWith(getRecipeDataStub, MicrodataTransformerStub, mockChtmlResp, testUrl);
+    it('getRecipeData was invoked with the MicrodataScraperStub class, etc', () => {
+      sinon.assert.calledWith(getRecipeDataStub, MicrodataScraperStub, mockChtmlResp, testUrl);
     });
 
     it('result should be null when neither class return data', () => {

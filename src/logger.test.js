@@ -16,7 +16,7 @@ describe('logger', () => {
 
     initLogger = (isLoggingEnabled) => {
       process.env.LOGGING_ENABLED = isLoggingEnabled;
-      return proxyquire.noCallThru().load('./logger', {}).default
+      return proxyquire.noCallThru().load('./logger', {}).default;
     };
   });
 
