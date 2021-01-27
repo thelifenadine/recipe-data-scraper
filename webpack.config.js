@@ -4,7 +4,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 module.exports = {
   mode: 'production',
   devtool: 'source-map',
-  entry: './src/scraper.js',
+  entry: './src/main.js',
   externals: {
     lodash: {
       commonjs: 'lodash',
@@ -26,7 +26,7 @@ module.exports = {
     globalObject: 'this',
     path: path.resolve(__dirname, 'lib'),
     filename: 'index.js',
-    library: 'recipeScraper',
+    library: 'recipeDataScraper',
     libraryTarget: 'umd',
   },
   plugins: [

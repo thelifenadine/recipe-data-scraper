@@ -1,18 +1,19 @@
 {
   "name": "recipe-data-scraper",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "web scraper for recipe data",
   "repository": "github:thelifenadine/recipe-data-scraper",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "webpack",
+    "build-watch": "webpack -w",
     "test-old": "mocha './src/**/*.test.js' --require @babel/register --reporter spec || exit 0",
     "lint": "eslint './src/**/*.js'",
     "test": "cross-env NODE_ENV=test nyc mocha './src/**/*.test.js' --exit",
     "coveralls": "cat ./coverage/lcov.info | node ./node_modules/coveralls/bin/coveralls.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls && nyc report --reporter=lcov",
-    "urlTester": "babel-node ./scripts/urlTesterCLI"
+    "test-url": "cross-env LOGGING_ENABLED=true babel-node ./scripts/urlTesterCLI"
   },
   "author": "Nadine Kinnen",
   "license": "GNU",

@@ -1,14 +1,14 @@
 import find from 'lodash/find';
 import microdata from 'microdata-node';
-import Transformer from './Transformer';
+import Scraper from './Scraper';
 
-class MicrodataTransformer extends Transformer {
+class MicrodataScraper extends Scraper {
   constructor(chtml) {
     super(chtml);
     this.type = 'microdata';
   }
 
-  testForData() {
+  testForMetadata() {
     const meta = microdata.toJson(this.chtml.html());
     if (!meta || !meta.items || !meta.items[0]) {
       return;
@@ -22,4 +22,4 @@ class MicrodataTransformer extends Transformer {
   }
 }
 
-export default MicrodataTransformer;
+export default MicrodataScraper;

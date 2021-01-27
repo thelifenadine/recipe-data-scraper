@@ -1,5 +1,5 @@
 import { question } from 'readline-sync';
-import scraper from '../src/scraper';
+import recipeDataScraper from '../src/main';
 
 async function recipeUrlTester() {
   console.log(' - - - - - - - - - - - - - - - - -');
@@ -11,16 +11,13 @@ async function recipeUrlTester() {
     process.exit(1);
   }
 
-  console.log(`Getting Recipe Data...`);
+  console.log(`Looking for Recipe Data...`);
 
   try {
-    const data = await scraper(answer);
-    if (data) {
-      console.log('The Recipe data you requested!');
-      console.log(data);
-    } else {
-      console.log('Could not find recipe data for that url');
-    }
+    const data = await recipeDataScraper(answer);
+
+    console.log('The Recipe data you requested!');
+    console.log(data);
   } catch (error) {
     console.log('Something went wrong, maybe try a different url');
   }
