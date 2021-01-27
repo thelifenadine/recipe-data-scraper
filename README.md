@@ -8,7 +8,7 @@ npm install recipe-data-scraper
 
 Example Usage:
 ```javascript
-import scraper from  'dough-scraper';
+import scraper from  'recipe-data-scraper';
 // ...
 const recipeImporter = async (req, res, next) {
     const recipe = await scraper(url); // pass a full url that contains a recipe
