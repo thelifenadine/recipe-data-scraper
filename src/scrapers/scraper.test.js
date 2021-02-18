@@ -3,11 +3,6 @@ import { should } from "chai";
 import sinon from 'sinon';
 should();
 
-const propertyMapperMock = {
-  name: (value) => (`${value} my-name`),
-  photo: (value) => (`${value} photo-value`),
-};
-
 describe('Scraper class', () => {
   let myClass;
   const chtmlStub = sinon.stub();
@@ -15,16 +10,13 @@ describe('Scraper class', () => {
 
   const testStub = sinon.stub();
   testStub.returns('hello');
-  let transformToFinalModelSpy;
+  const buildRecipeModelStub = sinon.stub();
 
   before(() => {
     myClass = proxyquire.noCallThru().load('./Scraper', {
-      '../recipeModelBuilder': (param) => param,
-      '../propertyMapper': propertyMapperMock,
+      '../dataTransformers/buildRecipeModel': buildRecipeModelStub,
       '../logger': loggerStub,
     }).default;
-
-    transformToFinalModelSpy = sinon.spy(myClass.prototype, 'transformToFinalModel');
   });
 
   describe('constructor with a valid class', () => {
@@ -106,10 +98,6 @@ describe('Scraper class', () => {
       scraper.getRecipe();
     });
 
-    after(() => {
-      transformToFinalModelSpy.resetHistory();
-    });
-
     it('testForMetadata should set the meta', () => {
       scraper.meta.should.eql('something');
     });
@@ -118,34 +106,8 @@ describe('Scraper class', () => {
       scraper.recipeItem.should.eql({ hi: 'food n stuff' });
     });
 
-    it('transformToFinalModelSpy should be invoked', () => {
-      sinon.assert.calledOnce(transformToFinalModelSpy);
-    });
-  });
-
-  describe('transformToFinalModel', () => {
-    let scraper;
-
-    before(async () => {
-      class mockClass extends myClass {
-        testForMetadata() {}
-        findRecipeItem() {}
-      }
-
-      scraper = new mockClass(chtmlStub);
-      scraper.recipeItem = {
-        name: 'eat my food',
-        photo: 'take my pic',
-        forget: 'me,'
-      };
-      scraper.transformToFinalModel();
-    });
-
-    it('finalRecipe should be mapped from the recipeItem', () => {
-      scraper.finalRecipe.should.eql({
-        name: 'eat my food my-name',
-        photo: 'take my pic photo-value',
-      });
+    it('buildRecipeModel should be invoked', () => {
+      sinon.assert.calledOnce(buildRecipeModelStub);
     });
   });
 
@@ -154,7 +116,7 @@ describe('Scraper class', () => {
     let error;
 
     before(async () => {
-      transformToFinalModelSpy.resetHistory();
+      buildRecipeModelStub.reset();
       class mockClass extends myClass {
         constructor(chtml) {
           super(chtml);
@@ -196,8 +158,8 @@ describe('Scraper class', () => {
       (scraper.recipeItem === null).should.be.true;
     });
 
-    it('transformToFinalModelSpy should not be called', () => {
-      sinon.assert.notCalled(transformToFinalModelSpy);
+    it('buildRecipeModel should not be called', () => {
+      sinon.assert.notCalled(buildRecipeModelStub);
     });
   });
 
@@ -206,7 +168,6 @@ describe('Scraper class', () => {
     let error;
 
     before(async () => {
-      transformToFinalModelSpy.resetHistory();
       class mockClass extends myClass {
         constructor(chtml) {
           super(chtml);
@@ -251,8 +212,8 @@ describe('Scraper class', () => {
       });
     });
 
-    it('transformToFinalModelSpy should not be called', () => {
-      sinon.assert.notCalled(transformToFinalModelSpy);
+    it('buildRecipeModel should not be called', () => {
+      sinon.assert.notCalled(buildRecipeModelStub);
     });
   });
 

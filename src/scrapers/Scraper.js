@@ -1,6 +1,4 @@
-import forEach from 'lodash/forEach';
-import propertyMapper from '../propertyMapper';
-import recipeModelBuilder from '../recipeModelBuilder';
+import buildRecipeModel from '../dataTransformers/buildRecipeModel';
 import logger from '../logger';
 
 /*
@@ -13,8 +11,9 @@ import logger from '../logger';
         this function should parse the metadata and assign recipe item to this.recipeItem
 */
 class Scraper {
-  constructor(chtml) {
+  constructor(chtml, url) {
     this.chtml = chtml;
+    this.url = url;
 
     this.meta = null;
     this.recipeItem = null;
@@ -34,6 +33,7 @@ class Scraper {
 
   getRecipe() {
     this.testForMetadata();
+
     if (!this.meta) {
       throw {
         message: 'no meta data was found',
@@ -50,26 +50,18 @@ class Scraper {
     }
 
     try {
-      this.transformToFinalModel();
-      return this.finalRecipe;
+      this.finalRecipe = buildRecipeModel(this.recipeItem);
+
+      return {
+        ...this.finalRecipe,
+        url: this.url,
+      };
     } catch (error) {
       throw {
         message: 'found recipe information, there was a problem with mapping the data',
         type: this.type,
       };
     }
-  }
-
-  transformToFinalModel() {
-    const initialProperties = {};
-
-    forEach(this.recipeItem, (value, key) => {
-      const propertyTransformer = propertyMapper[key];
-      if (propertyTransformer && value) {
-        initialProperties[key] = propertyTransformer(value, key);
-      }
-    });
-    this.finalRecipe = recipeModelBuilder(initialProperties);
   }
 
   print() {

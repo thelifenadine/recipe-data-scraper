@@ -3,17 +3,17 @@ import { should } from "chai";
 import sinon from 'sinon';
 should();
 
-describe('recipeModelBuilder', () => {
-  let recipeModelBuilder;
+describe('buildRecipeModel', () => {
+  let importedFile;
   const loggerStub = sinon.stub();
 
   before(() => {
-    recipeModelBuilder = proxyquire.noCallThru().load('./recipeModelBuilder', {
+    importedFile = proxyquire.noCallThru().load('./buildRecipeModel', {
       '../logger': loggerStub,
-    }).default;
+    });
   });
 
-  describe('expected behavior when passed all possible properties', () => {
+  describe('consolidateRecipeProperties: expected behavior when passed all possible properties', () => {
     let result;
     const originalProperties = {
       url: 'test_url',
@@ -59,7 +59,7 @@ describe('recipeModelBuilder', () => {
     };
 
     before(() => {
-      result = recipeModelBuilder(originalProperties);
+      result = importedFile.consolidateRecipeProperties(originalProperties);
     });
 
     it('the properties should match the final model', () => {
@@ -106,7 +106,7 @@ describe('recipeModelBuilder', () => {
     };
 
     before(() => {
-      result = recipeModelBuilder(originalProperties);
+      result = importedFile.consolidateRecipeProperties(originalProperties);
     });
 
     it('the keys should match the final model with fallback values', () => {

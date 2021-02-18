@@ -1,6 +1,8 @@
-import logger from './logger';
+import forEach from 'lodash/forEach';
+import logger from '../logger';
+import propertyTransformerMap from './propertyTransformerMap';
 
-const recipeModelBuilder = (originalProperties) => {
+export const consolidateRecipeProperties = (prospectiveProperties) => {
   const {
     url,
     name,
@@ -25,12 +27,14 @@ const recipeModelBuilder = (originalProperties) => {
     recipeType,
     keywords,
     tag,
-  } = originalProperties;
+  } = prospectiveProperties;
 
   if (step) {
-    logger('may need extra parsing?');
+    // didn't find any recipes that use step
+    logger('buildRecipeModel:may need extra parsing?');
   }
 
+  // consolidate the properties into new model
   return {
     url,
     name, // string
@@ -49,4 +53,22 @@ const recipeModelBuilder = (originalProperties) => {
   };
 };
 
-export default recipeModelBuilder;
+export const transformRecipeData = (recipeModel) => {
+  // parse and transform the property values
+  const transformedRecipe = {};
+  forEach(recipeModel, (value, key) => {
+    const propertyTransformer = propertyTransformerMap[key];
+    if (propertyTransformer && value) {
+      transformedRecipe[key] = propertyTransformer(value, key);
+    }
+  });
+
+  return transformedRecipe;
+};
+
+const buildRecipeModel = (prospectiveProperties) => {
+  const simpleRecipe = consolidateRecipeProperties(prospectiveProperties);
+  return transformRecipeData(simpleRecipe);
+};
+
+export default buildRecipeModel;

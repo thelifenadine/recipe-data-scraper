@@ -2,38 +2,45 @@ import axios from 'axios';
 import cheerio from 'cheerio';
 import MicrodataScraper from './scrapers/MicrodataScraper';
 import JsonLdScraper from './scrapers/JsonLdScraper';
-import getRecipeData from './getRecipeData';
+import logger from './logger';
 
 const errorMessage = 'Could not find recipe data';
 
 export default async (url) => {
-  let resp;
+  let chtml;
 
   try {
-    resp = await axios(url);
+    // load html from scraped url
+    const resp = await axios(url);
+    chtml = cheerio.load(resp.data);
   } catch (error) {
     throw new Error(errorMessage);
   }
 
-  const chtml = cheerio.load(resp.data);
-
-  const jsonLdRecipe = getRecipeData(JsonLdScraper, chtml, url);
-  if (jsonLdRecipe) {
-    return {
-      ...jsonLdRecipe,
+  try {
+    // attempt to find JsonLd data, return recipe or log and continue
+    const jsonLdScraper = new JsonLdScraper(chtml, url);
+    return jsonLdScraper.getRecipe();
+  } catch (error) {
+    logger('main:JsonLdScraper', {
+      ...error,
       url,
-    };
+    });
   }
 
-  const microdataRecipe = getRecipeData(MicrodataScraper, chtml, url);
-  if (microdataRecipe) {
-    return {
-      ...microdataRecipe,
+  try {
+    // attempt to find microdata, return recipe or log and continue
+    const microdataScraper = new MicrodataScraper(chtml, url);
+    return microdataScraper.getRecipe();
+  } catch (error) {
+    logger('main:MicrodataScraper', {
+      ...error,
       url,
-    };
+    });
   }
 
-  // could add a transformer for rdfa in the future
+  // could add a Scraper for rdfa in the future
 
+  // throw if no recipe found
   throw new Error(errorMessage);
 };

@@ -55,141 +55,39 @@ should();
 //   // [{"@context":"http://schema.org","url":"https://www.thepioneerwoman.com/food-cooking/recipes/a99178/instant-pot-pot-roast/","publisher":{"@type":"Organization","name":"The Pioneer Woman","logo":{"@type":"ImageObject","url":"https://assets.hearstapps.com/sites/thepioneerwoman/assets/images/logos/logo-jsonld.f682059.png","width":250,"height":60}},"@type":"Recipe","author":{"name":"Ree Drummond","@type":"Person"},"datePublished":"2018-10-01T13:21:11Z","headline":"Instant Pot Pot Roast","image":{"@type":"ImageObject","height":1542,"thumbnail":"https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/instant-pot-pot-roast-1591310014.jpg?crop=0.806xw:1.00xh;0.0272xw,0&resize=100:*","url":"https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/instant-pot-pot-roast-1591310014.jpg","width":1920},"mainEntityOfPage":{"@id":"https://www.thepioneerwoman.com/food-cooking/recipes/a99178/instant-pot-pot-roast/","@type":"WebPage"},"thumbnailUrl":"https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/instant-pot-pot-roast-1591310014.jpg?crop=0.806xw:1.00xh;0.0272xw,0&resize=100:*","name":"Instant Pot Pot Roast","prepTime":"PT5M","cookTime":"PT1H30M","totalTime":"PT1H35M","recipeIngredient":["1 <p>whole beef chuck roast, 3 to 4 pounds</p>","<p>Kosher salt</p>","<p>Black pepper</p>","2 tbsp. <p>olive oil</p>","2 <p>whole large yellow onions, peeled and quartered</p>","6 <p>whole carrots, washed, scrubbed, and cut into large pieces</p>","1 c. <p>red wine</p>","2 c. <p>beef stock</p>","3 <p>sprigs fresh rosemary</p>","3 <p>sprigs fresh thyme</p>"],"recipeInstructions":"Set the Instant to “Saute” and allow to warm.&nbsp; Season roast generously with salt and pepper. When Instant Pot says \"Hot,\" add in olive oil and sear roast until browned on all sides. Remove to a clean plate.&nbsp; Add in onions and carrots and cook for an additional 3-4 minutes, stirring occasionally. Deglaze with red wine, scraping the bottom of the pot to get all of the delicious bits. Add in the beef stock, rosemary, thyme and the beef.&nbsp; Lock the lid into place, place vent to sealing, push \"Manual,\" and set time to 60 minutes. The Instant Pot will release some steam as it comes up to pressure, then it will seal automatically.&nbsp; When the cooking time is done, allow the Instant Pot to naturally vent for at least 10 minutes, 20 is better. Using a wooden spoon, carefully push the valve open to release the rest of the pressure. Remove lid.&nbsp; Skim a much fat off the top of the liquid as you can before disturbing the roast. Remove the roast to a cutting board and with two forks shred roast. Serve alongside carrots and onions, topped with the pan juices. Serve with mashed potatoes.","video":[],"recipeCuisine":[],"recipeCategory":["main dish"],"recipeYield":"8 servings","description":"A Drummond family favorite, this pot roast cooks in half the time and pairs well with a side of creamy mashed potatoes.","keywords":"Recipes, Cooking, Food"}]
 // };
 
-describe('scraper(url)', () => {
-  let scraper;
+
+describe('main(url)', () => {
+  let main;
+  const loggerStub = sinon.stub();
   const axiosStub = sinon.stub();
   const cheerioStub = {
     load: sinon.stub(),
   };
-  const getRecipeDataStub = sinon.stub();
-  const MicrodataScraperStub = sinon.stub();
-  const JsonLdScraperStub = sinon.stub();
+  const getRecipeJsonLdStub = sinon.stub();
+  const getRecipeMicrodataStub = sinon.stub();
+
+  class MicrodataScraperClass {
+    constructor(chtml) {
+      this.chtml = chtml;
+    }
+    getRecipe = getRecipeMicrodataStub
+  }
+
+  class JsonLdScraperClass {
+    constructor(chtml) {
+      this.chtml = chtml;
+    }
+    getRecipe = getRecipeJsonLdStub
+  }
 
   before(() => {
-    scraper = proxyquire.noCallThru().load('./main', {
+    main = proxyquire.noCallThru().load('./main', {
       'axios': axiosStub,
       'cheerio': cheerioStub,
-      './getRecipeData': getRecipeDataStub,
-      './scrapers/JsonLdScraper': JsonLdScraperStub,
-      './scrapers/MicrodataScraper': MicrodataScraperStub,
+      './scrapers/JsonLdScraper': JsonLdScraperClass,
+      './scrapers/MicrodataScraper': MicrodataScraperClass,
+      './logger': loggerStub,
     }).default;
-  });
-
-  describe('test expected behavior when json-ld is returned', () => {
-    let result;
-    const testUrl = 'https://someurl.test';
-    const mockAxiosResp = { data: '<some html />' };
-    const mockChtmlResp = { some: 'response' };
-    const mockRecipeJsonLd = { has: 'json-ld' };
-
-    before(async () => {
-      axiosStub.withArgs(testUrl).returns(mockAxiosResp);
-      cheerioStub.load.returns(mockChtmlResp);
-      getRecipeDataStub.withArgs(JsonLdScraperStub, mockChtmlResp, testUrl)
-        .returns(mockRecipeJsonLd);
-      result = await scraper(testUrl);
-    });
-
-    it('axios was invoked with the url', () => {
-      sinon.assert.calledWith(axiosStub, testUrl);
-    });
-
-    it('cheerio.load was invoked with the url', () => {
-      sinon.assert.calledWith(cheerioStub.load, mockAxiosResp.data);
-    });
-
-    it('getRecipeData was invoked with the class, etc', () => {
-      sinon.assert.calledWith(getRecipeDataStub, JsonLdScraperStub, mockChtmlResp, testUrl);
-    });
-
-    it('getRecipeData was NOT invoked with the MicrodataScraperStub class, etc', () => {
-      sinon.assert.neverCalledWithMatch(getRecipeDataStub, MicrodataScraperStub, mockChtmlResp, testUrl);
-    });
-
-    it('result should equal json-ld response and the url', () => {
-      result.should.eql({ ...mockRecipeJsonLd, url: testUrl });
-    });
-  });
-
-  describe('test expected behavior when microdata is returned', () => {
-    let result;
-    const testUrl = 'https://someurl.test2';
-    const mockAxiosResp = { data: '<some html />' };
-    const mockChtmlResp = { some: 'response' };
-    const mockRecipeMicrodata = { has: 'microdata' };
-
-    before(async () => {
-      axiosStub.withArgs(testUrl).returns(mockAxiosResp);
-      cheerioStub.load.returns(mockChtmlResp);
-      getRecipeDataStub.withArgs(JsonLdScraperStub, mockChtmlResp, testUrl)
-        .returns(null);
-
-      getRecipeDataStub.withArgs(MicrodataScraperStub, mockChtmlResp, testUrl)
-        .returns(mockRecipeMicrodata);
-      result = await scraper(testUrl);
-    });
-
-    it('axios was invoked with the url', () => {
-      sinon.assert.calledWith(axiosStub, testUrl);
-    });
-
-    it('cheerio.load was invoked with the url', () => {
-      sinon.assert.calledWith(cheerioStub.load, mockAxiosResp.data);
-    });
-
-    it('getRecipeData was invoked with the class, etc', () => {
-      sinon.assert.calledWith(getRecipeDataStub, JsonLdScraperStub, mockChtmlResp, testUrl);
-    });
-
-    it('getRecipeData was invoked with the class, etc', () => {
-      sinon.assert.calledWith(getRecipeDataStub, MicrodataScraperStub, mockChtmlResp, testUrl);
-    });
-
-    it('result should equal json-ld response and the url', () => {
-      result.should.eql({ ...mockRecipeMicrodata, url: testUrl });
-    });
-  });
-
-  describe('test expected behavior when no recipe data is found', () => {
-    let errorMessage;
-    const testUrl = 'https://someurl.test2';
-    const mockAxiosResp = { data: '<some html />' };
-    const mockChtmlResp = { some: 'response' };
-
-    before(async () => {
-      axiosStub.withArgs(testUrl).returns(mockAxiosResp);
-      cheerioStub.load.returns(mockChtmlResp);
-      getRecipeDataStub.withArgs(JsonLdScraperStub, mockChtmlResp, testUrl)
-        .returns(null);
-      getRecipeDataStub.withArgs(MicrodataScraperStub, mockChtmlResp, testUrl)
-        .returns(null);
-
-      try {
-        await scraper(testUrl);
-      } catch (error) {
-        errorMessage = error.message;
-      }
-    });
-
-    it('axios was invoked with the url', () => {
-      sinon.assert.calledWith(axiosStub, testUrl);
-    });
-
-    it('cheerio.load was invoked with the url', () => {
-      sinon.assert.calledWith(cheerioStub.load, mockAxiosResp.data);
-    });
-
-    it('getRecipeData was invoked with the JsonLdScraperStub class, etc', () => {
-      sinon.assert.calledWith(getRecipeDataStub, JsonLdScraperStub, mockChtmlResp, testUrl);
-    });
-
-    it('getRecipeData was invoked with the MicrodataScraperStub class, etc', () => {
-      sinon.assert.calledWith(getRecipeDataStub, MicrodataScraperStub, mockChtmlResp, testUrl);
-    });
-
-    it('error should be caught with correct message', () => {
-      errorMessage.should.eql('Could not find recipe data');
-    });
   });
 
   describe('test expected behavior when the axios call fails', () => {
@@ -199,10 +97,9 @@ describe('scraper(url)', () => {
     before(async () => {
       axiosStub.withArgs(testUrl).throws();
       cheerioStub.load.reset();
-      getRecipeDataStub.reset();
 
       try {
-        await scraper(testUrl);
+        await main(testUrl);
       } catch (error) {
         errorMessage = error.message;
       }
@@ -216,8 +113,183 @@ describe('scraper(url)', () => {
       sinon.assert.notCalled(cheerioStub.load);
     });
 
-    it('getRecipeData will not be invoked', () => {
-      sinon.assert.notCalled(getRecipeDataStub);
+    it('getRecipe for the JsonLd instance will not be invoked', () => {
+      sinon.assert.notCalled(getRecipeJsonLdStub);
+    });
+
+    it('getRecipe for the microdata instance will not be invoked', () => {
+      sinon.assert.notCalled(getRecipeMicrodataStub);
+    });
+
+    it('error should be caught with correct message', () => {
+      errorMessage.should.eql('Could not find recipe data');
+    });
+  });
+
+  describe('test expected behavior when cheerio.load fails', () => {
+    let errorMessage;
+    const testUrl = 'https://someurl.test3';
+    const mockAxiosResp = { data: '<some html />' };
+
+    before(async () => {
+      axiosStub.reset();
+      axiosStub.withArgs(testUrl).returns(mockAxiosResp);
+      cheerioStub.load.reset();
+      cheerioStub.load.throws();
+
+      try {
+        await main(testUrl);
+      } catch (error) {
+        errorMessage = error.message;
+      }
+    });
+
+    it('axios was invoked with the url', () => {
+      sinon.assert.calledWith(axiosStub, testUrl);
+    });
+
+    it('cheerio.load was invoked with the response', () => {
+      sinon.assert.calledWith(cheerioStub.load, mockAxiosResp.data);
+    });
+
+    it('getRecipe for the JsonLd instance will not be invoked', () => {
+      sinon.assert.notCalled(getRecipeJsonLdStub);
+    });
+
+    it('getRecipe for the microdata instance will not be invoked', () => {
+      sinon.assert.notCalled(getRecipeMicrodataStub);
+    });
+
+    it('error should be caught with correct message', () => {
+      errorMessage.should.eql('Could not find recipe data');
+    });
+  });
+
+  describe('test expected behavior when json-ld is returned', () => {
+    let result;
+    const testUrl = 'https://someurl.test';
+    const mockAxiosResp = { data: '<some html />' };
+    const mockChtmlResp = { some: 'response' };
+    const mockRecipeJsonLd = { has: 'json-ld' };
+
+    before(async () => {
+      axiosStub.withArgs(testUrl).returns(mockAxiosResp);
+      cheerioStub.load.returns(mockChtmlResp);
+      getRecipeJsonLdStub.withArgs().returns(mockRecipeJsonLd);
+      result = await main(testUrl);
+    });
+
+    it('axios was invoked with the url', () => {
+      sinon.assert.calledWith(axiosStub, testUrl);
+    });
+
+    it('cheerio.load was invoked with the response', () => {
+      sinon.assert.calledWith(cheerioStub.load, mockAxiosResp.data);
+    });
+
+    it('getRecipe should be invoked on the JsonLd instance', () => {
+      sinon.assert.calledWith(getRecipeJsonLdStub);
+    });
+
+    it('getRecipe should NOT be invoked with the microdata', () => {
+      sinon.assert.neverCalledWithMatch(getRecipeMicrodataStub);
+    });
+
+    it('logger should not be invoked', () => {
+      sinon.assert.neverCalledWithMatch(loggerStub);
+    });
+
+    it('result should equal json-ld response', () => {
+      result.should.eql({ ...mockRecipeJsonLd });
+    });
+  });
+
+  describe('test expected behavior when microdata is returned', () => {
+    let result;
+    const testUrl = 'https://someurl.test2';
+    const mockAxiosResp = { data: '<some html />' };
+    const mockChtmlResp = { some: 'response' };
+    const mockRecipeMicrodata = { has: 'microdata' };
+
+    before(async () => {
+      loggerStub.reset();
+      axiosStub.withArgs(testUrl).returns(mockAxiosResp);
+      cheerioStub.load.returns(mockChtmlResp);
+      getRecipeJsonLdStub.reset();
+      getRecipeJsonLdStub.throws({ message: 'well well'});
+      getRecipeMicrodataStub.withArgs().returns(mockRecipeMicrodata);
+      result = await main(testUrl);
+    });
+
+    it('axios was invoked with the url', () => {
+      sinon.assert.calledWith(axiosStub, testUrl);
+    });
+
+    it('cheerio.load was invoked with the response', () => {
+      sinon.assert.calledWith(cheerioStub.load, mockAxiosResp.data);
+    });
+
+    it('logger should be invoked with json ld error', () => {
+      sinon.assert.calledWith(loggerStub, 'main:JsonLdScraper');
+    });
+
+    it('getRecipe was invoked with the class, etc', () => {
+      sinon.assert.calledWith(getRecipeMicrodataStub);
+    });
+
+    it('result should equal json-ld response and the url', () => {
+      result.should.eql({ ...mockRecipeMicrodata });
+    });
+  });
+
+  describe('test expected behavior when no recipe data is found', () => {
+    let errorMessage;
+    const testUrl = 'https://someurl.test2';
+    const mockAxiosResp = { data: '<some html />' };
+    const mockChtmlResp = { some: 'response' };
+
+    before(async () => {
+      loggerStub.reset();
+      axiosStub.withArgs(testUrl).returns(mockAxiosResp);
+      cheerioStub.load.returns(mockChtmlResp);
+      getRecipeJsonLdStub.reset();
+      getRecipeJsonLdStub.throws({ message: 'well well' });
+      getRecipeMicrodataStub.reset();
+      getRecipeMicrodataStub.throws({ message: 'no recipe here' });
+
+      try {
+        await main(testUrl);
+      } catch (error) {
+        errorMessage = error.message;
+      }
+    });
+
+    it('axios was invoked with the url', () => {
+      sinon.assert.calledWith(axiosStub, testUrl);
+    });
+
+    it('cheerio.load was invoked with the response', () => {
+      sinon.assert.calledWith(cheerioStub.load, mockAxiosResp.data);
+    });
+
+    it('getRecipe was invoked on the JsonLdScraper class', () => {
+      sinon.assert.calledWith(getRecipeJsonLdStub);
+    });
+
+    it('getRecipe was invoked on the MicrodataScraper class', () => {
+      sinon.assert.calledWith(getRecipeMicrodataStub);
+    });
+
+    it('logger should be invoked with json ld error', () => {
+      sinon.assert.callCount(loggerStub, 2);
+    });
+
+    it('logger should be invoked with jsonLd error', () => {
+      sinon.assert.calledWith(loggerStub.getCall(0), 'main:JsonLdScraper', { message: "well well", url: "https://someurl.test2" });
+    });
+
+    it('logger should be invoked with microdata error', () => {
+      sinon.assert.calledWith(loggerStub.getCall(1), 'main:MicrodataScraper', { message: "no recipe here", url: "https://someurl.test2" });
     });
 
     it('error should be caught with correct message', () => {
