@@ -13,7 +13,7 @@
     "test": "cross-env NODE_ENV=test nyc mocha './src/**/*.test.js' --exit",
     "coveralls": "cat ./coverage/lcov.info | node ./node_modules/coveralls/bin/coveralls.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls && nyc report --reporter=lcov",
-    "print-recipe-tester": "cross-env LOGGING_ENABLED=true babel-node ./scripts/printAll",
+    "print-recipe-tester": "cross-env LOGGING_ENABLED=true babel-node ./scripts/printRecipeTester",
     "test-url": "cross-env LOGGING_ENABLED=true babel-node ./scripts/urlTesterCLI"
   },
   "author": "Nadine Kinnen",
