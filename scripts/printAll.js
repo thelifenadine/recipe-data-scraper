@@ -7,7 +7,6 @@ import MicrodataScraper from '../src/scrapers/MicrodataScraper';
 import JsonLdScraper from '../src/scrapers/JsonLdScraper';
 const errorMessage = 'Could not find recipe data';
 
-
 async function print (url) {
   let chtml;
 
@@ -53,32 +52,60 @@ async function print (url) {
   throw new Error(errorMessage);
 };
 
-async function printData(urlCollection) {
-  for (const recipe in urlCollection) {
+async function printRecipe(url) {
+  try {
+    console.log(`- - - - - ${url} - - - - -`);
+    await print(url);
+    console.log(' - - - - - - - end recipe - - - - - - - - - -');
+  } catch (error) {
+    console.log('Something went wrong', error);
+  }
+}
+
+async function printRecipeCollection(recipes) {
+  for (const recipe in recipes) {
     if (Object.hasOwnProperty.call(microdataUrls, recipe)) {
       const recipeInfo = microdataUrls[recipe];
 
-      try {
-        console.log(`- - - - - ${recipeInfo.originalUrl} - - - - -`);
-        await print(recipeInfo.originalUrl);
-        console.log(' - - - - - - - end recipe - - - - - - - - - -');
-      } catch (error) {
-        console.log('Something went wrong', error);
+      const answer = question(`Print next recipe? (y/n): `);
+
+      if (answer && (answer === 'y' || answer === 'yes')) {
+        await printRecipe(recipeInfo.originalUrl);
+      } else {
+        console.log('Quitting...');
+        process.exit(1);
       }
     }
   }
 }
 
+async function enterCustomUrl() {
+  const url = question(`Enter Recipe Url: (or q to quit): `);
+
+  if (!url || url === 'q') {
+    console.log('Quitting! Come back later!');
+    process.exit(1);
+  }
+
+  await printRecipe(url);
+  enterCustomUrl();
+}
+
 function recipeUrlTester() {
   console.log(' - - - - - - - - - - - - - - - - -');
-  const answer = question(`Would you like to run all of the test urls? (y/n): `);
+  const option = question(`Would you like to run through the preset urls? (y/n): `);
 
-  if (answer && (answer === 'y' || answer === 'yes')) {
-    printData(microdataUrls);
-    printData(jsonLdUrls);
+  if (option && (option === 'y' || option === 'yes')) {
+    printRecipeCollection(microdataUrls);
+    printRecipeCollection(jsonLdUrls);
   } else {
-    console.log('Quitting...');
-    process.exit(1);
+    const option2 = question(`Would you like to test a custom url? (y/n) `);
+    if (option2 && (option2 === 'y' || option2 === 'yes')) {
+      enterCustomUrl(option2);
+    } else {
+      console.log('Quitting...');
+      process.exit(1);
+    }
   }
 }
 
