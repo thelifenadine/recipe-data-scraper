@@ -1,5 +1,5 @@
 import buildRecipeModel from '../dataTransformers/buildRecipeModel';
-import logger from '../logger';
+import logger from '../utils/logger';
 
 /*
   class to be extended by scraper classes

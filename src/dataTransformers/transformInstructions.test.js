@@ -9,7 +9,7 @@ describe('transformInstructions', () => {
 
   before(() => {
     transformInstructions = proxyquire.noCallThru().load('./transformInstructions', {
-      '../logger': loggerStub,
+      '../utils/logger': loggerStub,
     }).default;
   });
 
@@ -37,7 +37,7 @@ describe('transformInstructions', () => {
     });
   });
 
-  describe('expected behavior when passed an array of objects', () => {
+  describe('expected behavior when passed an array of objects with the expected format', () => {
     let result;
 
     before(() => {
@@ -46,6 +46,17 @@ describe('transformInstructions', () => {
 
     it('the argument should be returned as an array of strings', () => {
       result.should.eql(['test-1', 'yo']);
+    });
+  });
+
+  describe('expected behavior when passed an array of objects with another format', () => {
+    before(() => {
+      transformInstructions([{ random: 'log-me' }]);
+    });
+
+    it('the argument should be returned as an array of strings', () => {
+      sinon.assert
+        .calledOnceWithExactly(loggerStub, 'recipeinstructions array has different format', [{ random: 'log-me' }]);
     });
   });
 });

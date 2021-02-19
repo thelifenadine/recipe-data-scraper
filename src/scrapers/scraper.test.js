@@ -15,7 +15,7 @@ describe('Scraper class', () => {
   before(() => {
     myClass = proxyquire.noCallThru().load('./Scraper', {
       '../dataTransformers/buildRecipeModel': buildRecipeModelStub,
-      '../logger': loggerStub,
+      '../utils/logger': loggerStub,
     }).default;
   });
 

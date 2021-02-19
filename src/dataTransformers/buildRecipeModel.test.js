@@ -4,115 +4,68 @@ import sinon from 'sinon';
 should();
 
 describe('buildRecipeModel', () => {
-  let importedFile;
-  const loggerStub = sinon.stub();
+  let buildRecipeModel;
+
+  const consolidateRecipePropertiesStub = sinon.stub();
+
+  consolidateRecipePropertiesStub.returns({
+    url: 'test_url',
+    name: 'test_name',
+    image: 'test_image',
+    description: 'test_description', // string
+    cookTime: 'test_cookTime', // string
+    prepTime: 'test_prepTime', // string
+    totalTime: 'test_totalTime', // string
+    recipeYield: 'test_recipeYield',// string
+    recipeIngredients: ['ing, red, ient'], // array
+    recipeInstructions: ['step1, step2'], // array
+    recipeCategories: ['cat1, cat2, cat3, cat4'], // array
+    recipeCuisines: ['italian'], // array
+    recipeTypes: ['dinner'], // array
+    keywords: ['easy', 'banana'], // array
+  });
+
+  const propertyTransformerMapStub = {
+    name: sinon.stub(),
+    image: sinon.stub(),
+    description: sinon.stub(),
+    nope: sinon.stub(),
+  };
 
   before(() => {
-    importedFile = proxyquire.noCallThru().load('./buildRecipeModel', {
-      '../logger': loggerStub,
-    });
+    buildRecipeModel = proxyquire.noCallThru().load('./buildRecipeModel', {
+      './consolidateRecipeProperties': consolidateRecipePropertiesStub,
+      './propertyTransformerMap': propertyTransformerMapStub,
+    }).default;
   });
 
-  describe('consolidateRecipeProperties: expected behavior when passed all possible properties', () => {
-    let result;
-    const originalProperties = {
-      url: 'test_url',
-      name: 'test_name',
-      image: 'test_image',
-      photo: 'test_photo',
-      thumbnailUrl: 'test_thumbnailUrl',
-      description: 'test_description',
-      cookTime: 'test_cookTime',
-      prepTime: 'test_prepTime',
-      totalTime: 'test_totalTime',
-      recipeYield: 'test_recipeYield',
-      yield: 'test_yield',
-      recipeIngredients: 'test_recipeIngredients',
-      recipeIngredient: 'test_recipeIngredient',
-      ingredients: 'test_ingredients',
-      ingredient: 'test_ingredient',
-      recipeInstructions: 'test_recipeInstructions',
-      instructions: 'test_instructions',
-      step: 'test_step',
-      recipeCategory: 'test_recipeCategory',
-      recipeCuisine: 'test_recipeCuisine',
-      recipeType: 'test_recipeType',
-      keywords: 'test_keywords',
-      tag: 'test_tag',
-    };
-
-    const expectedProperties = {
+  describe('each property should invoke its transformer if it exists', () => {
+    const prospectiveProperties = {
       url: 'test_url',
       name: 'test_name',
       image: 'test_image',
       description: 'test_description',
-      cookTime: 'test_cookTime',
-      prepTime: 'test_prepTime',
-      totalTime: 'test_totalTime',
-      recipeYield: 'test_recipeYield',
-      recipeIngredients: 'test_recipeIngredient',
-      recipeInstructions: 'test_recipeInstructions',
-      recipeCategories: 'test_recipeCategory',
-      recipeCuisines: 'test_recipeCuisine',
-      recipeTypes: 'test_recipeType',
-      keywords: 'test_keywords',
+      nope: undefined,
     };
 
     before(() => {
-      result = importedFile.consolidateRecipeProperties(originalProperties);
+      buildRecipeModel(prospectiveProperties);
     });
 
-    it('the properties should match the final model', () => {
-      result.should.eql({
-        ...expectedProperties,
-      });
-    });
-  });
-
-  describe('expected behavior when passed fallback properties', () => {
-    let result;
-    const originalProperties = {
-      url: 'test_url',
-      name: 'test_name',
-      photo: 'test_photo',
-      description: 'test_description',
-      cookTime: 'test_cookTime',
-      prepTime: 'test_prepTime',
-      totalTime: 'test_totalTime',
-      yield: 'test_yield',
-      ingredient: 'test_ingredient',
-      instructions: 'test_instructions',
-      recipeCategory: 'test_recipeCategory',
-      recipeCuisine: 'test_recipeCuisine',
-      recipeType: 'test_recipeType',
-      tag: 'test_tag',
-    };
-
-    const expectedProperties = {
-      url: 'test_url',
-      name: 'test_name',
-      image: 'test_photo',
-      description: 'test_description',
-      cookTime: 'test_cookTime',
-      prepTime: 'test_prepTime',
-      totalTime: 'test_totalTime',
-      recipeYield: 'test_yield',
-      recipeIngredients: 'test_ingredient',
-      recipeInstructions: 'test_instructions',
-      recipeCategories: 'test_recipeCategory',
-      recipeCuisines: 'test_recipeCuisine',
-      recipeTypes: 'test_recipeType',
-      keywords: 'test_tag',
-    };
-
-    before(() => {
-      result = importedFile.consolidateRecipeProperties(originalProperties);
+    it('name', () => {
+      sinon.assert.calledOnceWithExactly(propertyTransformerMapStub.name, 'test_name', 'name');
     });
 
-    it('the keys should match the final model with fallback values', () => {
-      result.should.eql({
-        ...expectedProperties,
-      });
+    it('image', () => {
+      sinon.assert.calledOnceWithExactly(propertyTransformerMapStub.image, 'test_image', 'image');
+    });
+
+    it('description', () => {
+      sinon.assert.calledOnceWithExactly(propertyTransformerMapStub.description, 'test_description', 'description');
+    });
+
+    it('property without a value', () => {
+      sinon.assert.notCalled(propertyTransformerMapStub.nope);
     });
   });
 });

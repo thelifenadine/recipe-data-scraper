@@ -9,7 +9,7 @@ describe('transformToString', () => {
 
   before(() => {
     transformToString = proxyquire.noCallThru().load('./transformToString', {
-      '../logger': loggerStub,
+      '../utils/logger': loggerStub,
     }).default;
   });
 

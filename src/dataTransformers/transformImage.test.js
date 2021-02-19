@@ -9,7 +9,7 @@ describe('transformImage', () => {
 
   before(() => {
     transformImage = proxyquire.noCallThru().load('./transformImage', {
-      '../logger': loggerStub,
+      '../utils/logger': loggerStub,
     }).default;
   });
 

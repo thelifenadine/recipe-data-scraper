@@ -1,7 +1,6 @@
-const cleanIngredientAmounts = (line) => line
-  .replace(/¼/g, '1/4')
-  .replace(/½/g, '1/2')
-  .replace(/¾/g, '3/4');
+import forEach from 'lodash/forEach';
+import cleanIngredientAmounts from '../utils/cleanIngredientAmounts';
+import logger from '../utils/logger';
 
 const transformIngredients = (value) => {
   // jsonld
@@ -10,18 +9,26 @@ const transformIngredients = (value) => {
   }
 
   // array of objects (microdata)
-  return value.map(item => {
+  const mappedItems = [];
+
+  forEach(value, item => {
     if (item.properties) {
       const { name, amount } = item.properties;
       if (name || amount) {
         const _name = name && name[0];
         const _amount = amount && amount[0];
         const singleLine = _amount ? `${_amount} ${_name}` : _name;
-        return cleanIngredientAmounts(singleLine);
+        mappedItems.push(cleanIngredientAmounts(singleLine));
       }
     }
-    return cleanIngredientAmounts(item);
   });
+  // log issue
+  if (mappedItems.length) {
+    return mappedItems;
+  }
+
+  logger('transformIngredients:microdata:item without properties', value);
+  return [];
 };
 
 export default transformIngredients;
