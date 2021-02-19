@@ -68,7 +68,7 @@ async function printRecipeCollection(recipes) {
 
       const answer = question(`Print next recipe? (y/n): `);
 
-      if (answer && answer === 'y') {
+      if (answer === 'y') {
         await attemptPrintRecipe(recipeInfo.originalUrl);
       } else {
         console.log('Quitting...');
@@ -81,7 +81,7 @@ async function printRecipeCollection(recipes) {
 async function enterCustomUrl() {
   const url = question(`Enter Recipe Url: (or q to quit): `);
 
-  if (!url || url === 'q') {
+  if (url === 'q') {
     console.log('Quitting! Come back later!');
     process.exit(1);
   }
@@ -99,14 +99,14 @@ async function enterCustomUrl() {
 */
 async function recipeTesterPrintAll() {
   console.log(' - - - - - - - - - - - - - - - - -');
-  const option = question(`Would you like to run through the preset urls? (y/n): `);
+  const printPresetOption = question(`Would you like to run through the preset urls? (y/n): `);
 
-  if (option && option === 'y') {
+  if (printPresetOption === 'y') {
     printRecipeCollection({ ...microdataUrls, ...jsonLdUrls });
   } else {
-    const option2 = question(`Would you like to test a custom url? (y/n) `);
-    if (option2 && option2 === 'y') {
-      enterCustomUrl(option2);
+    const testCustomUrlOption = question(`Would you like to test a custom url? (y/n) `);
+    if (testCustomUrlOption === 'y') {
+      enterCustomUrl(testCustomUrlOption);
     } else {
       console.log('Quitting...');
       process.exit(1);

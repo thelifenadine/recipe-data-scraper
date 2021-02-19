@@ -27,7 +27,7 @@ async function recipeUrlTester() {
 
   const again = question(`Would you like to test another url? (y/n): `);
 
-  if (again && (again === 'y')) {
+  if (again === 'y') {
     recipeUrlTester();
   } else {
     console.log('Quitting! Come back soon!');
