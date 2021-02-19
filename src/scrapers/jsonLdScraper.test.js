@@ -10,11 +10,13 @@ const testResponse3 = [{"@context":"http://schema.org","@type":"Recipe","name":"
 describe('JsonLdScraper class', () => {
   let myClass;
 
+  const loggerStub = sinon.stub();
   const chtmlStub = sinon.stub();
   const getMeta = json => json.length > 1 ? json : json[0];
 
   before(() => {
     myClass = proxyquire.noCallThru().load('./JsonLdScraper', {
+      '../utils/logger': loggerStub,
     }).default;
   });
 
@@ -36,6 +38,34 @@ describe('JsonLdScraper class', () => {
 
     it('meta should be set', () => {
       jsonLdScraper.meta.should.eql(testMeta);
+    });
+  });
+
+
+  describe('test response 1: JSON.parse error', () => {
+    let jsonLdScraper;
+    let testMeta;
+
+    before(async () => {
+      loggerStub.reset();
+      testMeta = getMeta(testResponse1);
+
+      const testChtml = [{
+        children: [{ data: testMeta, type: 'k' }, {}]
+      }];
+
+      chtmlStub.returns(testChtml);
+      jsonLdScraper = new myClass(chtmlStub);
+      jsonLdScraper.testForMetadata();
+    });
+
+    it('invokes the logger with the json-ld errors', () => {
+      loggerStub.getCall(0).firstArg.should.eql('JsonLd: error parsing the json data');
+      loggerStub.getCall(1).firstArg.should.eql('Error: No JSON-LD valid script tags present on page');
+    });
+
+    it('meta should not be set', () => {
+      (jsonLdScraper.meta === null).should.be.true;
     });
   });
 

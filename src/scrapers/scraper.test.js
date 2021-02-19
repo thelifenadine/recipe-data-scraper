@@ -217,6 +217,64 @@ describe('Scraper class', () => {
     });
   });
 
+
+  describe('getRecipe when buildRecipeModel throws an exception', () => {
+    let scraper;
+    let error;
+
+    before(async () => {
+      buildRecipeModelStub.reset();
+      buildRecipeModelStub.throws('anything');
+
+      class mockClass extends myClass {
+        constructor(chtml) {
+          super(chtml);
+          this.type = 'tester-3';
+        }
+
+        testForMetadata() {
+          this.meta = 'something-meta-3';
+        }
+
+        findRecipeItem() {
+          this.recipeItem = {
+            chocolate: 'ice cream',
+          };
+        }
+      }
+
+      scraper = new mockClass(chtmlStub);
+
+      try {
+        scraper.getRecipe();
+      } catch (e) {
+        error = e;
+      }
+    });
+
+    it('meta should be set', () => {
+      scraper.meta.should.eql('something-meta-3');
+    });
+
+    it('recipeItem should be set', () => {
+      scraper.recipeItem.should.eql({
+        chocolate: 'ice cream',
+      });
+    });
+
+    it('buildRecipeModel should be called', () => {
+      sinon.assert.calledOnceWithExactly(buildRecipeModelStub, scraper.recipeItem);
+    });
+
+    it('recipe mapping error should be thrown', () => {
+      error.should.eql({
+        message: 'found recipe information, there was a problem with mapping the data',
+        type: 'tester-3',
+      });
+    });
+
+  });
+
   describe('print()', () => {
     let scraper;
 
