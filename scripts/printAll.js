@@ -1,13 +1,12 @@
-
 import axios from 'axios';
 import cheerio from 'cheerio';
 import { question } from 'readline-sync';
-import { microdataUrls, jsonLdUrls } from '../src/utils/testResponses';
+import { microdataUrls, jsonLdUrls } from './testResponses';
 import MicrodataScraper from '../src/scrapers/MicrodataScraper';
 import JsonLdScraper from '../src/scrapers/JsonLdScraper';
 const errorMessage = 'Could not find recipe data';
 
-async function print (url) {
+async function findAndPrintRecipeData(url) {
   let chtml;
 
   try {
@@ -52,10 +51,10 @@ async function print (url) {
   throw new Error(errorMessage);
 };
 
-async function printRecipe(url) {
+async function attemptPrintRecipe(url) {
   try {
     console.log(`- - - - - ${url} - - - - -`);
-    await print(url);
+    await findAndPrintRecipeData(url);
     console.log(' - - - - - - - end recipe - - - - - - - - - -');
   } catch (error) {
     console.log('Something went wrong', error);
@@ -64,13 +63,13 @@ async function printRecipe(url) {
 
 async function printRecipeCollection(recipes) {
   for (const recipe in recipes) {
-    if (Object.hasOwnProperty.call(microdataUrls, recipe)) {
-      const recipeInfo = microdataUrls[recipe];
+    if (Object.hasOwnProperty.call(recipes, recipe)) {
+      const recipeInfo = recipes[recipe];
 
       const answer = question(`Print next recipe? (y/n): `);
 
-      if (answer && (answer === 'y' || answer === 'yes')) {
-        await printRecipe(recipeInfo.originalUrl);
+      if (answer && answer === 'y') {
+        await attemptPrintRecipe(recipeInfo.originalUrl);
       } else {
         console.log('Quitting...');
         process.exit(1);
@@ -87,20 +86,26 @@ async function enterCustomUrl() {
     process.exit(1);
   }
 
-  await printRecipe(url);
+  await attemptPrintRecipe(url);
   enterCustomUrl();
 }
 
-function recipeUrlTester() {
+/*
+  This script allows one to run through the list of test urls and see the recipe
+  data that was scraped from the website and compare it to the transformed data
+  returned by the library.
+
+  One can opt out of testing the preset list and enter recipes by url.
+*/
+async function recipeTesterPrintAll() {
   console.log(' - - - - - - - - - - - - - - - - -');
   const option = question(`Would you like to run through the preset urls? (y/n): `);
 
-  if (option && (option === 'y' || option === 'yes')) {
-    printRecipeCollection(microdataUrls);
-    printRecipeCollection(jsonLdUrls);
+  if (option && option === 'y') {
+    printRecipeCollection({ ...microdataUrls, ...jsonLdUrls });
   } else {
     const option2 = question(`Would you like to test a custom url? (y/n) `);
-    if (option2 && (option2 === 'y' || option2 === 'yes')) {
+    if (option2 && option2 === 'y') {
       enterCustomUrl(option2);
     } else {
       console.log('Quitting...');
@@ -109,5 +114,5 @@ function recipeUrlTester() {
   }
 }
 
-export default recipeUrlTester();
+export default recipeTesterPrintAll();
 

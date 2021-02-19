@@ -2,7 +2,7 @@ import proxyquire from 'proxyquire';
 import { should } from "chai";
 import sinon from 'sinon';
 should();
-import { microdataUrls } from '../utils/testResponses';
+import { microdataUrls } from '../../scripts/testResponses';
 
 describe('transformIngredients functionality', () => {
   let transformIngredients;
