@@ -86,7 +86,7 @@ describe('main(url)', () => {
       'cheerio': cheerioStub,
       './scrapers/JsonLdScraper': JsonLdScraperClass,
       './scrapers/MicrodataScraper': MicrodataScraperClass,
-      './logger': loggerStub,
+      './utils/logger': loggerStub,
     }).default;
   });
 
@@ -200,7 +200,7 @@ describe('main(url)', () => {
     });
 
     it('result should equal json-ld response', () => {
-      result.should.eql({ ...mockRecipeJsonLd });
+      result.should.eql({ ...mockRecipeJsonLd, url: testUrl });
     });
   });
 
@@ -237,8 +237,8 @@ describe('main(url)', () => {
       sinon.assert.calledWith(getRecipeMicrodataStub);
     });
 
-    it('result should equal json-ld response and the url', () => {
-      result.should.eql({ ...mockRecipeMicrodata });
+    it('result should equal microdata response and the url', () => {
+      result.should.eql({ ...mockRecipeMicrodata, url: testUrl });
     });
   });
 

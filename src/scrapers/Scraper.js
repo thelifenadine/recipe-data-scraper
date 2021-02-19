@@ -11,9 +11,8 @@ import logger from '../utils/logger';
         this function should parse the metadata and assign recipe item to this.recipeItem
 */
 class Scraper {
-  constructor(chtml, url) {
+  constructor(chtml) {
     this.chtml = chtml;
-    this.url = url;
 
     this.meta = null;
     this.recipeItem = null;
@@ -52,10 +51,7 @@ class Scraper {
     try {
       this.finalRecipe = buildRecipeModel(this.recipeItem);
 
-      return {
-        ...this.finalRecipe,
-        url: this.url,
-      };
+      return this.finalRecipe;
     } catch (error) {
       throw {
         message: 'found recipe information, there was a problem with mapping the data',
@@ -68,6 +64,7 @@ class Scraper {
     if (this.recipeItem) {
       logger(' - - - - - - - - - - - - ');
       logger('original recipe data');
+      logger(`type: ${this.type}`);
       logger(this.recipeItem);
       logger(' - - - - - - - - - - - - ');
     }

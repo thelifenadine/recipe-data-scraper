@@ -2,7 +2,7 @@ import axios from 'axios';
 import cheerio from 'cheerio';
 import MicrodataScraper from './scrapers/MicrodataScraper';
 import JsonLdScraper from './scrapers/JsonLdScraper';
-import logger from './logger';
+import logger from './utils/logger';
 
 const errorMessage = 'Could not find recipe data';
 
@@ -20,7 +20,10 @@ export default async (url) => {
   try {
     // attempt to find JsonLd data, return recipe or log and continue
     const jsonLdScraper = new JsonLdScraper(chtml, url);
-    return jsonLdScraper.getRecipe();
+    return {
+      ...jsonLdScraper.getRecipe(),
+      url,
+    };
   } catch (error) {
     logger('main:JsonLdScraper', {
       ...error,
@@ -31,7 +34,10 @@ export default async (url) => {
   try {
     // attempt to find microdata, return recipe or log and continue
     const microdataScraper = new MicrodataScraper(chtml, url);
-    return microdataScraper.getRecipe();
+    return {
+      ...microdataScraper.getRecipe(),
+      url,
+    };
   } catch (error) {
     logger('main:MicrodataScraper', {
       ...error,
