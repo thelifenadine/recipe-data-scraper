@@ -3,13 +3,13 @@ import { should } from "chai";
 import sinon from 'sinon';
 should();
 
-describe('recipeModelBuilder', () => {
-  let recipeModelBuilder;
+describe('consolidateRecipeProperties', () => {
+  let consolidateRecipeProperties;
   const loggerStub = sinon.stub();
 
   before(() => {
-    recipeModelBuilder = proxyquire.noCallThru().load('./recipeModelBuilder', {
-      '../logger': loggerStub,
+    consolidateRecipeProperties = proxyquire.noCallThru().load('./consolidateRecipeProperties', {
+      '../utils/logger': loggerStub,
     }).default;
   });
 
@@ -59,7 +59,7 @@ describe('recipeModelBuilder', () => {
     };
 
     before(() => {
-      result = recipeModelBuilder(originalProperties);
+      result = consolidateRecipeProperties(originalProperties);
     });
 
     it('the properties should match the final model', () => {
@@ -106,7 +106,7 @@ describe('recipeModelBuilder', () => {
     };
 
     before(() => {
-      result = recipeModelBuilder(originalProperties);
+      result = consolidateRecipeProperties(originalProperties);
     });
 
     it('the keys should match the final model with fallback values', () => {

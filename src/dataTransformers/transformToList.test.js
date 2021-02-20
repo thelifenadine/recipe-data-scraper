@@ -3,13 +3,13 @@ import { should } from "chai";
 import sinon from 'sinon';
 should();
 
-describe('transformToString', () => {
-  let transformToString;
+describe('transformToList', () => {
+  let transformToList;
   const loggerStub = sinon.stub();
 
   before(() => {
-    transformToString = proxyquire.noCallThru().load('./transformToString', {
-      '../logger': loggerStub,
+    transformToList = proxyquire.noCallThru().load('./transformToList', {
+      '../utils/logger': loggerStub,
     }).default;
   });
 
@@ -17,11 +17,11 @@ describe('transformToString', () => {
     let result;
 
     before(() => {
-      result = transformToString('test');
+      result = transformToList('test');
     });
 
-    it('the param should be passed as is', () => {
-      result.should.eql('test');
+    it('the param should be returned in an array', () => {
+      result.should.eql(['test']);
     });
   });
 
@@ -29,11 +29,11 @@ describe('transformToString', () => {
     let result;
 
     before(() => {
-      result = transformToString(['test-1', 'yo']);
+      result = transformToList(['test-1', 'yo']);
     });
 
-    it('the string at index 0 should be returned', () => {
-      result.should.eql('test-1');
+    it('the argument should be returned as is', () => {
+      result.should.eql(['test-1', 'yo']);
     });
   });
 
@@ -42,7 +42,7 @@ describe('transformToString', () => {
 
     before(() => {
       loggerStub.resetHistory();
-      result = transformToString({ nope: 'nope.com' });
+      result = transformToList({ nope: 'nope.com' });
     });
 
     it('loggerStub should be invoked', () => {

@@ -3,13 +3,13 @@ import { should } from "chai";
 import sinon from 'sinon';
 should();
 
-describe('transformImage', () => {
-  let transformImage;
+describe('transformToString', () => {
+  let transformToString;
   const loggerStub = sinon.stub();
 
   before(() => {
-    transformImage = proxyquire.noCallThru().load('./transformImage', {
-      '../logger': loggerStub,
+    transformToString = proxyquire.noCallThru().load('./transformToString', {
+      '../utils/logger': loggerStub,
     }).default;
   });
 
@@ -17,7 +17,7 @@ describe('transformImage', () => {
     let result;
 
     before(() => {
-      result = transformImage('test');
+      result = transformToString('test');
     });
 
     it('the param should be passed as is', () => {
@@ -29,7 +29,7 @@ describe('transformImage', () => {
     let result;
 
     before(() => {
-      result = transformImage(['test-1', 'yo']);
+      result = transformToString(['test-1', 'yo']);
     });
 
     it('the string at index 0 should be returned', () => {
@@ -37,25 +37,12 @@ describe('transformImage', () => {
     });
   });
 
-  describe('expected behavior when passed an object with a url prop', () => {
-    let result;
-
-    before(() => {
-      result = transformImage({ url: 'hiya.com' });
-    });
-
-    it('the url value should be returned', () => {
-      result.should.eql('hiya.com');
-    });
-  });
-
-
   describe('expected behavior when something unexpected is passed', () => {
     let result;
 
     before(() => {
       loggerStub.resetHistory();
-      result = transformImage({ nope: 'nope.com' });
+      result = transformToString({ nope: 'nope.com' });
     });
 
     it('loggerStub should be invoked', () => {

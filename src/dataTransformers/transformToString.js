@@ -1,4 +1,4 @@
-import logger from '../logger';
+import logger from '../utils/logger';
 
 function transformToString(value, key) {
   if (typeof value === 'string') {

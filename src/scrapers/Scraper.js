@@ -1,7 +1,5 @@
-import forEach from 'lodash/forEach';
-import propertyMapper from '../propertyMapper';
-import recipeModelBuilder from '../recipeModelBuilder';
-import logger from '../logger';
+import buildRecipeModel from '../dataTransformers/buildRecipeModel';
+import logger from '../utils/logger';
 
 /*
   class to be extended by scraper classes
@@ -34,6 +32,7 @@ class Scraper {
 
   getRecipe() {
     this.testForMetadata();
+
     if (!this.meta) {
       throw {
         message: 'no meta data was found',
@@ -50,7 +49,8 @@ class Scraper {
     }
 
     try {
-      this.transformToFinalModel();
+      this.finalRecipe = buildRecipeModel(this.recipeItem);
+
       return this.finalRecipe;
     } catch (error) {
       throw {
@@ -60,22 +60,11 @@ class Scraper {
     }
   }
 
-  transformToFinalModel() {
-    const initialProperties = {};
-
-    forEach(this.recipeItem, (value, key) => {
-      const propertyTransformer = propertyMapper[key];
-      if (propertyTransformer && value) {
-        initialProperties[key] = propertyTransformer(value, key);
-      }
-    });
-    this.finalRecipe = recipeModelBuilder(initialProperties);
-  }
-
   print() {
     if (this.recipeItem) {
       logger(' - - - - - - - - - - - - ');
       logger('original recipe data');
+      logger(`type: ${this.type}`);
       logger(this.recipeItem);
       logger(' - - - - - - - - - - - - ');
     }

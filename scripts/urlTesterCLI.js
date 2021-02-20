@@ -1,6 +1,9 @@
 import { question } from 'readline-sync';
 import recipeDataScraper from '../src/main';
-
+/*
+  This script takes a url from the user and prints the parsed data
+  so that a user can test the functionality without a UI
+*/
 async function recipeUrlTester() {
   console.log(' - - - - - - - - - - - - - - - - -');
   console.log('Welcome to the Recipe Url tester!')
@@ -24,7 +27,7 @@ async function recipeUrlTester() {
 
   const again = question(`Would you like to test another url? (y/n): `);
 
-  if (again && (again === 'y' || again === 'yes')) {
+  if (again === 'y') {
     recipeUrlTester();
   } else {
     console.log('Quitting! Come back soon!');

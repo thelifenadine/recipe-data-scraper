@@ -1,7 +1,7 @@
 import find from 'lodash/find';
 import get from 'lodash/get';
 import forEach from 'lodash/forEach';
-import logger from '../logger';
+import logger from '../utils/logger';
 import Scraper from './Scraper';
 
 class JsonLdScraper extends Scraper {
