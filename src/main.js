@@ -6,7 +6,7 @@ import logger from './utils/logger';
 
 const errorMessage = 'Could not find recipe data';
 
-export default async (url) => {
+export default async (url, shouldPrint = false) => {
   let chtml;
 
   try {
@@ -20,8 +20,14 @@ export default async (url) => {
   try {
     // attempt to find JsonLd data, return recipe or log and continue
     const jsonLdScraper = new JsonLdScraper(chtml, url);
+    const recipe = jsonLdScraper.getRecipe();
+
+    if (shouldPrint) {
+      jsonLdScraper.print();
+    }
+
     return {
-      ...jsonLdScraper.getRecipe(),
+      ...recipe,
       url,
     };
   } catch (error) {
@@ -31,11 +37,17 @@ export default async (url) => {
     });
   }
 
+  // attempt to find microdata, return recipe or log and continue
   try {
-    // attempt to find microdata, return recipe or log and continue
     const microdataScraper = new MicrodataScraper(chtml, url);
+    const recipe = microdataScraper.getRecipe();
+
+    if (shouldPrint) {
+      microdataScraper.print();
+    }
+
     return {
-      ...microdataScraper.getRecipe(),
+      ...recipe,
       url,
     };
   } catch (error) {
