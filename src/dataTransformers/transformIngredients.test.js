@@ -110,8 +110,7 @@ describe('transformIngredients functionality', () => {
   });
 });
 
-
-describe('transformIngredients end to end', () => {
+describe.skip('transformIngredients end to end', () => {
   let transformIngredients;
 
   before(() => {
