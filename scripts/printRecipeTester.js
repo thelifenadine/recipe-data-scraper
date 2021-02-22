@@ -5,7 +5,7 @@ import recipeDataScraper from '../src/main';
 async function attemptPrintRecipe(url) {
   try {
     console.log(`- - - - - ${url} - - - - -`);
-    await recipeDataScraper(url, true);
+    await recipeDataScraper(url, { printToConsole: true });
     console.log(' - - - - - - - end recipe - - - - - - - - - -');
   } catch (error) {
     console.log('Something went wrong', error);

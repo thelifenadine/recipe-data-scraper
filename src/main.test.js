@@ -171,7 +171,7 @@ describe('main(url)', () => {
       axiosStub.withArgs(testUrl).returns(mockAxiosResp);
       cheerioStub.load.returns(mockChtmlResp);
       getRecipeJsonLdStub.withArgs().returns(mockRecipeJsonLd);
-      result = await recipeDataScraper(testUrl, true);
+      result = await recipeDataScraper(testUrl, { printToConsole: true });
     });
 
     it('axios was invoked with the url', () => {
@@ -260,7 +260,7 @@ describe('main(url)', () => {
       getRecipeJsonLdStub.reset();
       getRecipeJsonLdStub.throws({ message: 'well well' });
       getRecipeMicrodataStub.withArgs().returns(mockRecipeMicrodata);
-      result = await recipeDataScraper(testUrl, true);
+      result = await recipeDataScraper(testUrl, { printToConsole: true });
     });
 
     it('axios was invoked with the url', () => {
