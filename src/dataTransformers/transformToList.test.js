@@ -13,18 +13,29 @@ describe('transformToList', () => {
     }).default;
   });
 
-  describe('expected behavior when passed a string', () => {
+  describe('expected behavior when passed a simple string', () => {
     let result;
 
     before(() => {
-      result = transformToList('test');
+      result = transformToList('test of something simple');
     });
 
     it('the param should be returned in an array', () => {
-      result.should.eql(['test']);
+      result.should.eql(['test of something simple']);
     });
   });
 
+  describe('expected behavior when passed a comma separated string', () => {
+    let result;
+
+    before(() => {
+      result = transformToList('test, of something, simple');
+    });
+
+    it('the param should be returned in an array', () => {
+      result.should.eql(['test', 'of something', 'simple']);
+    });
+  });
   describe('expected behavior when passed an array', () => {
     let result;
 
