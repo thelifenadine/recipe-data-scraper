@@ -45,15 +45,15 @@ describe('cleanString', () => {
     });
   });
 
-  describe('expected behavior when passed a string with an amp; character', () => {
+  describe('expected behavior when passed a string with a &nbsp; character', () => {
     let result;
 
     before(() => {
-      result = cleanString('fine & dandy');
+      result = cleanString('just&nbsp;fine & dandy');
     });
 
     it('should return the string as is', () => {
-      result.should.eql('fine & dandy');
+      result.should.eql('just fine & dandy');
     });
   });
 });

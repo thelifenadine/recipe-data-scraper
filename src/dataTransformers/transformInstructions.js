@@ -24,7 +24,7 @@ function transformInstructions(value) {
       if (item.text) {
         return cleanString(item.text);
       } else {
-        logger('recipeinstructions array has different format', value);
+        logger('recipe instructions array has different format', value);
       }
     });
   }

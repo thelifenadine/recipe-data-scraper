@@ -7,6 +7,7 @@ describe('propertyTransformerMap', () => {
   const transformImageStub = sinon.stub();
   const transformToListStub = sinon.stub();
   const transformToStringStub = sinon.stub();
+  const transformToCleanStringStub = sinon.stub();
   const transformInstructionsStub = sinon.stub();
   const transformIngredientsStub = sinon.stub();
 
@@ -17,6 +18,7 @@ describe('propertyTransformerMap', () => {
       './transformImage': transformImageStub,
       './transformToList': transformToListStub,
       './transformToString': transformToStringStub,
+      './transformToCleanString': transformToCleanStringStub,
       './transformInstructions': transformInstructionsStub,
       './transformIngredients': transformIngredientsStub,
     }).default;
@@ -32,7 +34,7 @@ describe('propertyTransformerMap', () => {
     });
 
     it('the description key should map to the string transformer', () => {
-      propertyTransformerMap['description'].should.eql(transformToStringStub);
+      propertyTransformerMap['description'].should.eql(transformToCleanStringStub);
     });
 
     it('the cookTime key should map to the string transformer', () => {
