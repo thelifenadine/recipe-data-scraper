@@ -30,6 +30,3 @@ export default function cleanString(str) {
     .replace(MATCH_MULTI_SPACE, ' ')
     .trim();
 }
-
-// TODO cookTime
-// clean description
