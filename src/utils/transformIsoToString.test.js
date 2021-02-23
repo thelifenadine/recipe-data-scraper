@@ -84,7 +84,7 @@ describe('transformIsoToString', () => {
           hours: 0,
           minutes: 0,
           seconds: 90,
-        }).should.eql('90 minutes');
+        }).should.eql('90 seconds');
       });
     });
 
