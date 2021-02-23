@@ -56,6 +56,41 @@ describe('transformToTime', () => {
     });
   });
 
+  describe('expected behavior for an ISO duration', () => {
+    let result;
+
+    before(() => {
+      transformToStringStub.withArgs('PT55').returns('PT55');
+      isoParseStub.withArgs('PT55').returns(null);
+      result = transformToTime('PT55');
+    });
+
+    after(() => {
+      transformToStringStub.reset();
+      isoParseStub.reset();
+    });
+
+    it('should invoke transformToString on the value', () => {
+      sinon.assert.calledOnceWithExactly(transformToStringStub, 'PT55');
+    });
+
+    it('should invoke parse on the value', () => {
+      sinon.assert.calledOnceWithExactly(isoParseStub, 'PT55');
+    });
+
+    it('should NOT invoke transformISOToString', () => {
+      sinon.assert.notCalled(transformIsoToStringStub);
+    });
+
+    it('should NOT invoke the logger', () => {
+      sinon.assert.notCalled(loggerStub);
+    });
+
+    it('should return the readable result', () => {
+      result.should.eql('PT55');
+    });
+  });
+
   describe('expected behavior for another format', () => {
     let result;
 
