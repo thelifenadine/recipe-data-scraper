@@ -39,8 +39,11 @@ export const consolidateRecipeProperties = (prospectiveProperties) => {
     image: image || photo || thumbnailUrl, // string
     description, // string
     cookTime, // string
+    cookTimeOriginalFormat: cookTime, // string
     prepTime, // string
+    prepTimeOriginalFormat: prepTime, // string
     totalTime, // string
+    totalTimeOriginalFormat: totalTime, // string
     recipeYield: recipeYield || rYield, // string
     recipeIngredients: recipeIngredient || recipeIngredients || ingredients || ingredient, // array of strings
     recipeInstructions: recipeInstructions || instructions || step, // array of strings

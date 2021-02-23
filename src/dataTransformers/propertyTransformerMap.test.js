@@ -7,6 +7,7 @@ describe('propertyTransformerMap', () => {
   const transformImageStub = sinon.stub();
   const transformToListStub = sinon.stub();
   const transformToStringStub = sinon.stub();
+  const transformToTimeStub = sinon.stub();
   const transformToCleanStringStub = sinon.stub();
   const transformInstructionsStub = sinon.stub();
   const transformIngredientsStub = sinon.stub();
@@ -17,6 +18,7 @@ describe('propertyTransformerMap', () => {
     propertyTransformerMap = proxyquire.noCallThru().load('./propertyTransformerMap', {
       './transformImage': transformImageStub,
       './transformToList': transformToListStub,
+      './transformToTime': transformToTimeStub,
       './transformToString': transformToStringStub,
       './transformToCleanString': transformToCleanStringStub,
       './transformInstructions': transformInstructionsStub,
@@ -37,16 +39,28 @@ describe('propertyTransformerMap', () => {
       propertyTransformerMap['description'].should.eql(transformToCleanStringStub);
     });
 
-    it('the cookTime key should map to the string transformer', () => {
-      propertyTransformerMap['cookTime'].should.eql(transformToStringStub);
+    it('the cookTimeOriginalFormat key should map to the string transformer', () => {
+      propertyTransformerMap['cookTimeOriginalFormat'].should.eql(transformToStringStub);
     });
 
-    it('the prepTime key should map to the string transformer', () => {
-      propertyTransformerMap['prepTime'].should.eql(transformToStringStub);
+    it('the prepTimeOriginalFormat key should map to the string transformer', () => {
+      propertyTransformerMap['prepTimeOriginalFormat'].should.eql(transformToStringStub);
     });
 
-    it('the totalTime key should map to the string transformer', () => {
-      propertyTransformerMap['totalTime'].should.eql(transformToStringStub);
+    it('the totalTimeOriginalFormat key should map to the string transformer', () => {
+      propertyTransformerMap['totalTimeOriginalFormat'].should.eql(transformToStringStub);
+    });
+
+    it('the cookTime key should map to the time transformer', () => {
+      propertyTransformerMap['cookTime'].should.eql(transformToTimeStub);
+    });
+
+    it('the prepTime key should map to the time transformer', () => {
+      propertyTransformerMap['prepTime'].should.eql(transformToTimeStub);
+    });
+
+    it('the totalTime key should map to the time transformer', () => {
+      propertyTransformerMap['totalTime'].should.eql(transformToTimeStub);
     });
 
     it('the recipeYield key should map to the string transformer', () => {
