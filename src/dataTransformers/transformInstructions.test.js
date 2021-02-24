@@ -64,6 +64,19 @@ describe('transformInstructions', () => {
         .calledOnceWithExactly(loggerStub, 'recipe instructions array has different format', [{ random: 'log-me' }]);
     });
   });
+
+  describe('custom handling for king arthur flour', () => {
+    let result;
+
+    before(() => {
+      cleanStringStub.withArgs('test abc').returns('clean test., test two., test three');
+      result = transformInstructions('test abc');
+    });
+
+    it('the param should be returned in an array', () => {
+      result.should.eql(['clean test', 'test two', 'test three']);
+    });
+  });
 });
 
 describe('transformInstructions no stubs', () => {
