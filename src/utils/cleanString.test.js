@@ -56,4 +56,6 @@ describe('cleanString', () => {
       result.should.eql('just fine & dandy');
     });
   });
+
+  // see more tests in transformInstructions.test.js
 });
