@@ -1,4 +1,4 @@
-import { MATCH_HTML_TAGS, MATCH_MULTI_SPACE } from './cleanString';
+import { MATCH_HTML_TAGS, MATCH_MULTI_SPACE } from './regex';
 
 const cleanIngredientAmounts = (line) => line
   .replace(/¼/g, '1/4')

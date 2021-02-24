@@ -1,61 +1,41 @@
 import proxyquire from 'proxyquire';
+import sinon from 'sinon';
 import { should } from "chai";
 should();
+import { MATCH_HTML_TAGS, MATCH_LINE_BREAK, MATCH_MULTI_SPACE } from './regex';
 
 describe('cleanString', () => {
   let cleanString;
+  let replaceSpy;
+  let trimSpy;
 
   before(() => {
+    replaceSpy = sinon.spy(String.prototype, 'replace');
+    trimSpy = sinon.spy(String.prototype, 'trim');
     cleanString = proxyquire.noCallThru().load('./cleanString', {}).default;
   });
 
-  describe('expected behavior when passed a string with no html', () => {
-    let result;
-
-    before(() => {
-      result = cleanString('test a string with no html');
-    });
-
-    it('the param should be passed as is', () => {
-      result.should.eql('test a string with no html');
-    });
+  after(() => {
+    replaceSpy.restore();
+    trimSpy.restore();
   });
 
-  describe('expected behavior when passed a string with html', () => {
-    let result;
-
+  describe('expected behavior', () => {
     before(() => {
-      result = cleanString('<p>test a <a href="go-somewhere">string</a> with</p> html');
+      trimSpy.resetHistory();
+      replaceSpy.resetHistory();
+      cleanString('some sort of string');
     });
 
-    it('the html tags should be removed', () => {
-      result.should.eql('test a string with html');
+    it('replace should be invoked with the regex patterns', () => {
+      sinon.assert.calledWith(replaceSpy, MATCH_HTML_TAGS, '');
+      sinon.assert.calledWith(replaceSpy, MATCH_LINE_BREAK, ' ');
+      sinon.assert.calledWith(replaceSpy, MATCH_MULTI_SPACE, ' ');
+      sinon.assert.calledThrice(replaceSpy);
+    });
+
+    it('trim should be invoked once', () => {
+      sinon.assert.calledOnce(trimSpy);
     });
   });
-
-  describe('expected behavior when passed a string with a script', () => {
-    let result;
-
-    before(() => {
-      result = cleanString('<script>alert("HEY!")</script> cut that out');
-    });
-
-    it('the script tags should be removed', () => {
-      result.should.eql('alert("HEY!") cut that out');
-    });
-  });
-
-  describe('expected behavior when passed a string with a &nbsp; character', () => {
-    let result;
-
-    before(() => {
-      result = cleanString('just&nbsp;fine & dandy');
-    });
-
-    it('should return the string as is', () => {
-      result.should.eql('just fine & dandy');
-    });
-  });
-
-  // see more tests in transformInstructions.test.js
 });
