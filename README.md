@@ -44,8 +44,11 @@ recipeDataScraper(url)
 | image | string |
 | description | string |
 | cookTime | string |
+| cookTimeOriginalFormat | string |
 | prepTime | string |
+| prepTimeOriginalFormat | string |
 | totalTime | string |
+| totalTimeOriginalFormat | string |
 | recipeYield | string |
 | recipeIngredients | array of strings |
 | recipeInstructions | array of strings |
