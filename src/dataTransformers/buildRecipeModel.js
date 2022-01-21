@@ -1,4 +1,3 @@
-import forEach from 'lodash/forEach';
 import consolidateRecipeProperties from './consolidateRecipeProperties';
 import propertyTransformerMap from './propertyTransformerMap';
 
@@ -7,7 +6,7 @@ const buildRecipeModel = (prospectiveProperties) => {
 
   // parse and transform the property values
   const transformedRecipe = {};
-  forEach(recipe, (value, key) => {
+  Object.entries(recipe).forEach(([key, value]) => {
     const propertyTransformer = propertyTransformerMap[key];
     if (propertyTransformer && value) {
       transformedRecipe[key] = propertyTransformer(value, key);

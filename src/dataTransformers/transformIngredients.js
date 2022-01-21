@@ -1,4 +1,3 @@
-import forEach from 'lodash/forEach';
 import cleanIngredientAmounts from '../utils/cleanIngredientAmounts';
 import logger from '../utils/logger';
 
@@ -11,7 +10,7 @@ const transformIngredients = (value) => {
   // array of objects (microdata)
   const mappedItems = [];
 
-  forEach(value, item => {
+  Object.entries(value).forEach(([, item]) => {
     if (item.properties) {
       const { name, amount } = item.properties;
       if (name || amount) {

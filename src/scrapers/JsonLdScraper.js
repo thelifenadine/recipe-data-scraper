@@ -1,6 +1,3 @@
-import find from 'lodash/find';
-import get from 'lodash/get';
-import forEach from 'lodash/forEach';
 import logger from '../utils/logger';
 import Scraper from './Scraper';
 
@@ -14,12 +11,11 @@ class JsonLdScraper extends Scraper {
     var json = [];
     const jsonLdFromHtml = this.chtml('script[type="application/ld+json"]');
 
-    forEach(jsonLdFromHtml, item => {
+    Object.entries(jsonLdFromHtml).forEach(([ , item]) => {
       let contents;
       try {
-        const data = get(item, 'children[0].data');
-        if (data) {
-          contents = JSON.parse(data);
+        if (item && item.children && item.children[0] && item.children[0].data) {
+          contents = JSON.parse(item.children[0].data);
         }
       } catch (e) {
         logger('JsonLd: error parsing the json data', e);
@@ -48,7 +44,7 @@ class JsonLdScraper extends Scraper {
     // @graph: king arthur, 12tomatoes, sallysbaking, cookie&kate
     // other: martha stewart, foodnetwork, eatingwell, allrecipes, myrecipes, seriouseats, skinnytaste
     const graphLevel = this.meta['@graph'] || this.meta;
-    this.recipeItem = find(graphLevel, item => (item['@type'] === 'Recipe'));
+    this.recipeItem = Object.values(graphLevel).find(item => (item['@type'] === 'Recipe'));
   }
 }
 
