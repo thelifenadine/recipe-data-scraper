@@ -1,4 +1,3 @@
-import find from 'lodash/find';
 import microdata from 'microdata-node';
 import Scraper from './Scraper';
 
@@ -17,7 +16,7 @@ class MicrodataScraper extends Scraper {
   }
 
   findRecipeItem() {
-    const recipe = find(this.meta.items, item => (item.type[0].indexOf('Recipe') > -1));
+    const recipe = Object.values(this.meta.items).find(item => (item.type[0].indexOf('Recipe') > -1));
     this.recipeItem = (recipe) ? recipe.properties : null;
   }
 }
