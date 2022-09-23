@@ -1,4 +1,4 @@
-interface ScrapedRecipeData {
+export interface ScrapedRecipeData {
   url?: string;
   name?: string;
   image?: string;
