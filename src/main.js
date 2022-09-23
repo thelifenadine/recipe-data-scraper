@@ -6,20 +6,13 @@ import logger from './utils/logger';
 
 const errorMessage = 'Could not find recipe data';
 
-export default async (url, options = {}) => {
+export function parse(html, options = {}) {
   const {
     printToConsole,
+    url,
   } = options;
 
-  let chtml;
-
-  try {
-    // load html from scraped url
-    const resp = await axios(url);
-    chtml = cheerio.load(resp.data);
-  } catch (error) {
-    throw new Error(errorMessage);
-  }
+  const chtml = cheerio.load(html);
 
   try {
     // attempt to find JsonLd data, return recipe or log and continue
@@ -65,4 +58,24 @@ export default async (url, options = {}) => {
 
   // throw if no recipe found
   throw new Error(errorMessage);
+}
+
+export default async (url, options = {}) => {
+  const {
+    printToConsole,
+  } = options;
+
+  let resp;
+
+  try {
+    // load html from scraped url
+    resp = await axios(url);
+  } catch (error) {
+    throw new Error(errorMessage);
+  }
+
+  return parse(resp.data, {
+    url,
+    ...options,
+  })
 };
