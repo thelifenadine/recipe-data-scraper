@@ -5,6 +5,8 @@ should();
 
 describe('main(url)', () => {
   let recipeDataScraper;
+  let errors;
+  let recipeParser
   const loggerStub = sinon.stub();
   const axiosStub = sinon.stub();
   const cheerioStub = {
@@ -32,13 +34,16 @@ describe('main(url)', () => {
   }
 
   before(() => {
-    recipeDataScraper = proxyquire.noCallThru().load('./main', {
+    const recipeModule = proxyquire.noCallThru().load('./main', {
       'axios': axiosStub,
       'cheerio': cheerioStub,
       './scrapers/JsonLdScraper': JsonLdScraperClass,
       './scrapers/MicrodataScraper': MicrodataScraperClass,
       './utils/logger': loggerStub,
-    }).default;
+    })
+    errors = recipeModule.errors
+    recipeDataScraper = recipeModule.default
+    recipeParser = recipeModule.parse
   });
 
   describe('test expected behavior when the axios call fails', () => {
@@ -73,7 +78,7 @@ describe('main(url)', () => {
     });
 
     it('error should be caught with correct message', () => {
-      errorMessage.should.eql('Could not find recipe data');
+      errorMessage.should.eql(errors.fetchFailed);
     });
   });
 
@@ -112,7 +117,7 @@ describe('main(url)', () => {
     });
 
     it('error should be caught with correct message', () => {
-      errorMessage.should.eql('Could not find recipe data');
+      errorMessage.should.eql(errors.parseFailed);
     });
   });
 
@@ -215,7 +220,7 @@ describe('main(url)', () => {
       axiosStub.withArgs(testUrl).returns(mockAxiosResp);
       cheerioStub.load.returns(mockChtmlResp);
       getRecipeJsonLdStub.reset();
-      getRecipeJsonLdStub.throws({ message: 'well well'});
+      getRecipeJsonLdStub.throws({ message: 'well well' });
       getRecipeMicrodataStub.withArgs().returns(mockRecipeMicrodata);
       result = await recipeDataScraper(testUrl);
     });
@@ -339,7 +344,7 @@ describe('main(url)', () => {
     });
 
     it('error should be caught with correct message', () => {
-      errorMessage.should.eql('Could not find recipe data');
+      errorMessage.should.eql(errors.noRecipeFound);
     });
   });
 });

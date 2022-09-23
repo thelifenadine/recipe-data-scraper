@@ -8,6 +8,7 @@
   "scripts": {
     "build": "webpack",
     "build-watch": "webpack -w",
+    "prepack": "webpack",
     "test-old": "mocha './src/**/*.test.js' --require @babel/register --reporter spec || exit 0",
     "lint": "eslint './src/**/*.js'",
     "test": "cross-env NODE_ENV=test nyc mocha './src/**/*.test.js' --exit",

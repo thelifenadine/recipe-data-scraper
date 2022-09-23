@@ -4,21 +4,23 @@ import MicrodataScraper from './scrapers/MicrodataScraper';
 import JsonLdScraper from './scrapers/JsonLdScraper';
 import logger from './utils/logger';
 
-const errorMessage = 'Could not find recipe data';
+export const errors = {
+  fetchFailed: 'Failed to fetch recipe',
+  parseFailed: 'Failed to parse recipe HTML',
+  noRecipeFound: 'Could not find recipe data',
+}
 
-export default async (url, options = {}) => {
+export function parse(html, options = {}) {
   const {
     printToConsole,
+    url,
   } = options;
 
   let chtml;
-
   try {
-    // load html from scraped url
-    const resp = await axios(url);
-    chtml = cheerio.load(resp.data);
+    chtml = cheerio.load(html);
   } catch (error) {
-    throw new Error(errorMessage);
+    throw new Error(errors.parseFailed);
   }
 
   try {
@@ -64,5 +66,21 @@ export default async (url, options = {}) => {
   // could add a Scraper for rdfa in the future
 
   // throw if no recipe found
-  throw new Error(errorMessage);
+  throw new Error(errors.noRecipeFound);
+}
+
+export default async (url, options = {}) => {
+  let resp;
+
+  try {
+    // load html from scraped url
+    resp = await axios(url);
+  } catch (error) {
+    throw new Error(errors.fetchFailed);
+  }
+
+  return parse(resp.data, {
+    url,
+    ...options,
+  })
 };
