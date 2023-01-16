@@ -11,7 +11,7 @@ class JsonLdScraper extends Scraper {
     var json = [];
     const jsonLdFromHtml = this.chtml('script[type="application/ld+json"]');
 
-    Object.entries(jsonLdFromHtml).forEach(([ , item]) => {
+    Object.entries(jsonLdFromHtml).forEach(([, item]) => {
       let contents;
       try {
         if (item && item.children && item.children[0] && item.children[0].data) {
@@ -45,6 +45,9 @@ class JsonLdScraper extends Scraper {
     // other: martha stewart, foodnetwork, eatingwell, allrecipes, myrecipes, seriouseats, skinnytaste
     const graphLevel = this.meta['@graph'] || this.meta;
     this.recipeItem = Object.values(graphLevel).find(item => (item['@type'] === 'Recipe'));
+    if (this.recipeItem == null) {
+      this.recipeItem = Object.values(graphLevel).find(item => (item['@type'].includes('Recipe')));
+    }
   }
 }
 
