@@ -36,20 +36,15 @@ class JsonLdScraper extends Scraper {
   }
 
   findRecipeItem() {
-
-    console.log(">>>> TYPE: ", this.meta['@type'])
-
     if (this.meta['@type'] === 'Recipe') {
       // nytimes, food.com, bonappetite, ohsheglows, simplyrecipes
       this.recipeItem = this.meta;
       return;
     }
-
     // @graph: king arthur, 12tomatoes, sallysbaking, cookie&kate
     // other: martha stewart, foodnetwork, eatingwell, allrecipes, myrecipes, seriouseats, skinnytaste
     const graphLevel = this.meta['@graph'] || this.meta;
     this.recipeItem = Object.values(graphLevel).find(item => (item['@type'] === 'Recipe'));
-
     if (this.recipeItem == null) {
       this.recipeItem = Object.values(graphLevel).find(item => (item['@type'].includes('Recipe')));
     }
