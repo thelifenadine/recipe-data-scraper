@@ -1,5 +1,5 @@
 import axios from 'axios';
-import cheerio from 'cheerio';
+import { load } from 'cheerio';
 import MicrodataScraper from './scrapers/MicrodataScraper';
 import JsonLdScraper from './scrapers/JsonLdScraper';
 import logger from './utils/logger';
@@ -16,7 +16,7 @@ export default async (url, options = {}) => {
   try {
     // load html from scraped url
     const resp = await axios(url);
-    chtml = cheerio.load(resp.data);
+    chtml = load(resp.data);
   } catch (error) {
     throw new Error(errorMessage);
   }

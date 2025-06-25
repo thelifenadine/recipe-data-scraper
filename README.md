@@ -64,3 +64,29 @@ git clone git@github.com:thelifenadine/recipe-data-scraper.git
 npm install
 npm run test-url
 ```
+
+# Recipe Data Scraper
+
+## Node.js Version Requirement
+
+This project requires **Node.js 18.x** for optimal compatibility with all dependencies.
+
+### Quick Setup
+
+```bash
+# Use the specified Node.js version
+nvm use
+
+# Install dependencies
+npm install
+
+# Build the project
+npm run build
+
+# Run tests
+npm test
+```
+
+The project includes a `.nvmrc` file that specifies Node.js 18. If you're using nvm, simply run `nvm use` in the project directory to switch to the correct version.
+
+## Overview
