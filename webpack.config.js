@@ -7,13 +7,18 @@ module.exports = {
   devtool: 'source-map',
   entry: './src/main.js',
   module: {
-    rules: [{
-      test: /\.js$/,
-      exclude: /node_modules/,
-      use: {
-        loader: "babel-loader"
+    rules: [
+      {
+        test: /\.(ts|js)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader"
+        }
       }
-    }]
+    ]
+  },
+  resolve: {
+    extensions: ['.ts', '.js'],
   },
   optimization: {
     minimize: true,
