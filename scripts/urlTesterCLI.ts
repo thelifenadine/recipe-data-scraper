@@ -1,5 +1,5 @@
 import { question } from 'readline-sync';
-import recipeDataScraper from '../src/main';
+import recipeDataScraper from '../src/index';
 import { RecipeWithUrl, ScrapingOptions } from '../src/types';
 
 /*

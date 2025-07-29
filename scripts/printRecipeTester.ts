@@ -1,6 +1,6 @@
 import { question } from 'readline-sync';
 import { microdataUrls, jsonLdUrls } from './testResponses';
-import recipeDataScraper from '../src/main';
+import recipeDataScraper from '../src/index';
 import { ScrapingOptions } from '../src/types';
 
 // Type definitions for test response data

@@ -4,7 +4,7 @@
   "description": "web scraper for recipe data",
   "repository": "github:thelifenadine/recipe-data-scraper",
   "main": "lib/index.js",
-  "types": "index.d.ts",
+  "types": "lib/index.d.ts",
   "scripts": {
     "build": "webpack",
     "build:ts": "tsc --noEmit",

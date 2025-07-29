@@ -66,4 +66,7 @@ export default async (url: string, options: ScrapingOptions = {}): Promise<Recip
 
   // throw if no recipe found
   throw new Error(errorMessage);
-}; 
+};
+
+// Re-export all types for consumers
+export * from './types'; 
