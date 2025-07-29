@@ -24,7 +24,9 @@ class MicrodataScraper extends Scraper implements IMicrodataScraper {
   findRecipeItem(): void {
     if (!this.meta || !this.meta.items) return;
     
-    const recipe = Object.values(this.meta.items).find(item => (item.type[0].indexOf('Recipe') > -1));
+    const recipe = Object.values(this.meta.items).find(item => (
+      item && item.type && item.type[0] && item.type[0].indexOf('Recipe') > -1
+    ));
     this.recipeItem = (recipe) ? recipe.properties : null;
   }
 }
