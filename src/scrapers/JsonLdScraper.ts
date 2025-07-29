@@ -5,7 +5,7 @@ import { JsonLdRecipe } from '../types';
 import * as cheerio from 'cheerio';
 
 class JsonLdScraper extends Scraper implements IJsonLdScraper {
-  type: 'jsonld' = 'jsonld';
+  type = 'jsonld' as const;
   meta: JsonLdRecipe | JsonLdRecipe[] | null = null;
   recipeItem: JsonLdRecipe | null = null;
 

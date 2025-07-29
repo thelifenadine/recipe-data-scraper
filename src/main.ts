@@ -18,7 +18,7 @@ export default async (url: string, options: ScrapingOptions = {}): Promise<Recip
     // load html from scraped url
     const resp = await axios(url);
     chtml = load(resp.data);
-  } catch (error) {
+  } catch {
     throw new Error(errorMessage);
   }
 

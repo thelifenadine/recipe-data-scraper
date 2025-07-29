@@ -50,7 +50,7 @@ abstract class Scraper implements IScraper {
       this.finalRecipe = buildRecipeModel(this.recipeItem);
 
       return this.finalRecipe;
-    } catch (error) {
+    } catch {
       throw {
         message: 'found recipe information, there was a problem with mapping the data',
         type: this.type,

@@ -14,7 +14,7 @@ function transformToTime(value: string | any, key?: string): string | any {
     const parsedDuration = parseISO(stringValue);
     const transformedTime = transformISOToString(parsedDuration);
     return transformedTime || stringValue;
-  } catch (error) {
+  } catch {
     logger('ISO date parsing failure for', key);
     return stringValue;
   }

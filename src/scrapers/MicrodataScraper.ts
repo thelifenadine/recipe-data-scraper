@@ -5,7 +5,7 @@ import { MicrodataResponse } from '../types';
 import * as cheerio from 'cheerio';
 
 class MicrodataScraper extends Scraper implements IMicrodataScraper {
-  type: 'microdata' = 'microdata';
+  type = 'microdata' as const;
   meta: MicrodataResponse | null = null;
   recipeItem: any | null = null;
 
