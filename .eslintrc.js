@@ -2,32 +2,21 @@ module.exports = {
   root: true,
   env: {
     node: true,
-    es6: true,
-    mocha: true
+    es2020: true
   },
   extends: [
     'eslint:recommended'
   ],
   overrides: [
     {
-      // JavaScript files
-      files: ['**/*.js'],
-      parser: '@babel/eslint-parser',
-      plugins: ['babel'],
-      parserOptions: {
-        ecmaVersion: 2020,
-        sourceType: 'module',
-        requireConfigFile: false,
-        babelOptions: {
-          presets: ['@babel/preset-env']
-        }
-      }
-    },
-    {
-      // TypeScript files
+      // TypeScript files (primary configuration)
       files: ['**/*.ts'],
       parser: '@typescript-eslint/parser',
       plugins: ['@typescript-eslint'],
+      extends: [
+        'eslint:recommended',
+        'plugin:@typescript-eslint/recommended'
+      ],
       parserOptions: {
         ecmaVersion: 2020,
         sourceType: 'module'
@@ -37,6 +26,14 @@ module.exports = {
         '@typescript-eslint/no-unused-vars': 'warn',
         '@typescript-eslint/no-var-requires': 'off',
         'no-undef': 'off' // TypeScript handles this
+      }
+    },
+    {
+      // JavaScript files (legacy support if any remain)
+      files: ['**/*.js'],
+      parserOptions: {
+        ecmaVersion: 2020,
+        sourceType: 'module'
       }
     }
   ]

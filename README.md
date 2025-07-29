@@ -33,28 +33,6 @@ recipeDataScraper(url)
   .catch((err) => res.status(500).json({ message: err.message }));
 ```
 
-#### Recipe Model:
-
-| property                | type             |
-| ----------------------- | ---------------- |
-| url                     | string           |
-| name                    | string           |
-| image                   | string           |
-| description             | string           |
-| cookTime                | string           |
-| cookTimeOriginalFormat  | string           |
-| prepTime                | string           |
-| prepTimeOriginalFormat  | string           |
-| totalTime               | string           |
-| totalTimeOriginalFormat | string           |
-| recipeYield             | string           |
-| recipeIngredients       | array of strings |
-| recipeInstructions      | array of strings |
-| recipeCategories        | array of strings |
-| recipeCuisines          | array of strings |
-| recipeTypes             | array of strings |
-| keywords                | array of strings |
-
 # CLI:
 
 If you want to try this library without a UI, you can clone it locally and run it via the command line.
