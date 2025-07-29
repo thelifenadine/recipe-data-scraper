@@ -9,4 +9,4 @@ const cleanIngredientAmounts = (line) => line
   .replace(MATCH_MULTI_SPACE, ' ')
   .trim();
 
-export default cleanIngredientAmounts;
+export default cleanIngredientAmounts; 

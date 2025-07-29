@@ -7,4 +7,4 @@ export default function cleanString(str) {
     .replace(MATCH_LINE_BREAK, ' ') // replace line breaks with spaces
     .replace(MATCH_MULTI_SPACE, ' ') // replace multiple spaces with single spaces
     .trim();
-}
+} 

@@ -6,4 +6,4 @@ const logger = (...args) => {
   }
 };
 
-export default logger;
+export default logger; 

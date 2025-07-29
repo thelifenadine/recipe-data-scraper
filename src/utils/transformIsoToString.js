@@ -18,4 +18,4 @@ export default function transformISOToString(dateObj = {}) {
   }
 
   return date.trim();
-}
+} 
