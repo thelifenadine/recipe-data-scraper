@@ -1,5 +1,8 @@
 import buildRecipeModel from '../dataTransformers/buildRecipeModel';
 import logger from '../utils/logger';
+import { IScraper } from './types';
+import { Recipe } from '../types';
+import * as cheerio from 'cheerio';
 
 /*
   class to be extended by scraper classes
@@ -10,27 +13,22 @@ import logger from '../utils/logger';
       findRecipeItem
         this function should parse the metadata and assign recipe item to this.recipeItem
 */
-class Scraper {
-  constructor(chtml) {
+abstract class Scraper implements IScraper {
+  chtml: cheerio.CheerioAPI;
+  type: string = '';
+  meta: any = null;
+  recipeItem: any = null;
+  finalRecipe?: Recipe;
+
+  constructor(chtml: cheerio.CheerioAPI) {
     this.chtml = chtml;
-
-    this.meta = null;
-    this.recipeItem = null;
-
-    if (!this.testForMetadata) {
-      throw {
-        message: 'testForMetadata function must be implemented by child class',
-      };
-    }
-
-    if (!this.findRecipeItem) {
-      throw {
-        message: 'findRecipeItem function must be implemented by child class',
-      };
-    }
   }
 
-  getRecipe() {
+  // Abstract methods that must be implemented by child classes
+  abstract testForMetadata(): void;
+  abstract findRecipeItem(): void;
+
+  getRecipe(): Recipe {
     this.testForMetadata();
 
     if (!this.meta) {
@@ -60,7 +58,7 @@ class Scraper {
     }
   }
 
-  print() {
+  print(): void {
     if (this.recipeItem) {
       logger(' - - - - - - - - - - - - ');
       logger('original recipe data');
@@ -78,4 +76,4 @@ class Scraper {
   }
 }
 
-export default Scraper;
+export default Scraper; 

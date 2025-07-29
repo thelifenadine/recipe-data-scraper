@@ -1,18 +1,18 @@
 import axios from 'axios';
 import { load } from 'cheerio';
-import MicrodataScraper from './scrapers/MicrodataScraper.js';
-import JsonLdScraper from './scrapers/JsonLdScraper.js';
-import logger from './utils/logger.js';
-import { ScrapingOptions, RecipeWithUrl, Recipe } from './types';
+import MicrodataScraper from './scrapers/MicrodataScraper';
+import JsonLdScraper from './scrapers/JsonLdScraper';
+import logger from './utils/logger';
+import { ScrapingOptions, RecipeWithUrl } from './types';
 
-const errorMessage = 'Could not find recipe data';
+const errorMessage: string = 'Could not find recipe data';
 
 export default async (url: string, options: ScrapingOptions = {}): Promise<RecipeWithUrl> => {
   const {
     printToConsole,
   } = options;
 
-  let chtml: any;
+  let chtml;
 
   try {
     // load html from scraped url
@@ -24,8 +24,8 @@ export default async (url: string, options: ScrapingOptions = {}): Promise<Recip
 
   try {
     // attempt to find JsonLd data, return recipe or log and continue
-    const jsonLdScraper = new (JsonLdScraper as any)(chtml, url);
-    const recipe: Recipe = jsonLdScraper.getRecipe();
+    const jsonLdScraper = new JsonLdScraper(chtml);
+    const recipe = jsonLdScraper.getRecipe();
 
     if (printToConsole) {
       jsonLdScraper.print();
@@ -35,7 +35,7 @@ export default async (url: string, options: ScrapingOptions = {}): Promise<Recip
       ...recipe,
       url,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger('main:JsonLdScraper', {
       ...(error as object),
       url,
@@ -44,8 +44,8 @@ export default async (url: string, options: ScrapingOptions = {}): Promise<Recip
 
   // attempt to find microdata, return recipe or log and continue
   try {
-    const microdataScraper = new (MicrodataScraper as any)(chtml, url);
-    const recipe: Recipe = microdataScraper.getRecipe();
+    const microdataScraper = new MicrodataScraper(chtml);
+    const recipe = microdataScraper.getRecipe();
 
     if (printToConsole) {
       microdataScraper.print();
@@ -55,7 +55,7 @@ export default async (url: string, options: ScrapingOptions = {}): Promise<Recip
       ...recipe,
       url,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger('main:MicrodataScraper', {
       ...(error as object),
       url,

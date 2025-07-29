@@ -1,4 +1,11 @@
-export default function transformISOToString(dateObj = {}) {
+interface ISODateObject {
+  days?: number;
+  hours?: number;
+  minutes?: number;
+  seconds?: number;
+}
+
+export default function transformISOToString(dateObj: ISODateObject = {}): string {
   let date = '';
 
   if (dateObj.days) {
@@ -18,4 +25,4 @@ export default function transformISOToString(dateObj = {}) {
   }
 
   return date.trim();
-}
+} 

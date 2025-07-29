@@ -1,7 +1,13 @@
 import logger from '../utils/logger';
 import cleanString from '../utils/cleanString';
 
-function transformInstructions(value) {
+interface InstructionObject {
+  text: string;
+}
+
+type InstructionsValue = string | string[] | InstructionObject[];
+
+function transformInstructions(value: InstructionsValue): string[] | undefined {
   if (typeof value === 'string') {
     const cleanedValue = cleanString(value);
     if (cleanedValue.includes('.,')) {
@@ -16,18 +22,19 @@ function transformInstructions(value) {
     // microdata
     const firstItem = value[0];
     if (typeof firstItem === 'string') {
-      return value.map(item => cleanString(item)); // loop through items and clean
+      return (value as string[]).map(item => cleanString(item)); // loop through items and clean
     }
 
     // json ld
-    return value.map(item => {
+    return (value as InstructionObject[]).map((item: InstructionObject) => {
       if (item.text) {
         return cleanString(item.text);
       } else {
         logger('recipe instructions array has different format', value);
+        return '';
       }
     });
   }
 }
 
-export default transformInstructions;
+export default transformInstructions; 

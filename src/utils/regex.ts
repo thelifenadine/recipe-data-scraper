@@ -18,6 +18,6 @@
   multiline
 */
 
-export const MATCH_HTML_TAGS = /<[^>]*>?/gm;
-export const MATCH_LINE_BREAK = /(\r\n|\n|\r)/gm;
-export const MATCH_MULTI_SPACE = /&nbsp;|\s\s+/gm; // or &nbsp;
+export const MATCH_HTML_TAGS: RegExp = /<[^>]*>?/gm;
+export const MATCH_LINE_BREAK: RegExp = /(\r\n|\n|\r)/gm;
+export const MATCH_MULTI_SPACE: RegExp = /&nbsp;|\s\s+/gm; // or &nbsp; 

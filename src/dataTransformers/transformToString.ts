@@ -1,6 +1,6 @@
 import logger from '../utils/logger';
 
-function transformToString(value, key) {
+function transformToString(value: string | string[] | any, key?: string): string | any {
   if (typeof value === 'string') {
     return value;
   }
@@ -11,4 +11,4 @@ function transformToString(value, key) {
   return value;
 }
 
-export default transformToString;
+export default transformToString; 

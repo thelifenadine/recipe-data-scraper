@@ -1,6 +1,53 @@
 import logger from '../utils/logger';
 
-export const consolidateRecipeProperties = (prospectiveProperties) => {
+interface RawRecipeData {
+  url?: any;
+  name?: any;
+  image?: any;
+  photo?: any;
+  thumbnailUrl?: any;
+  description?: any;
+  cookTime?: any;
+  prepTime?: any;
+  totalTime?: any;
+  recipeYield?: any;
+  yield?: any;
+  recipeIngredients?: any;
+  recipeIngredient?: any;
+  ingredients?: any;
+  ingredient?: any;
+  recipeInstructions?: any;
+  instructions?: any;
+  step?: any;
+  recipeCategory?: any;
+  recipeCuisine?: any;
+  recipeType?: any;
+  keywords?: any;
+  tag?: any;
+  [key: string]: any;
+}
+
+interface ConsolidatedProperties {
+  url?: any;
+  name?: any;
+  image?: any;
+  description?: any;
+  cookTime?: any;
+  cookTimeOriginalFormat?: any;
+  prepTime?: any;
+  prepTimeOriginalFormat?: any;
+  totalTime?: any;
+  totalTimeOriginalFormat?: any;
+  recipeYield?: any;
+  recipeIngredients?: any;
+  recipeInstructions?: any;
+  recipeCategories?: any;
+  recipeCuisines?: any;
+  recipeTypes?: any;
+  keywords?: any;
+}
+
+export const consolidateRecipeProperties = (prospectiveProperties: RawRecipeData): ConsolidatedProperties => {
   const {
     url,
     name,
@@ -54,4 +101,4 @@ export const consolidateRecipeProperties = (prospectiveProperties) => {
   };
 };
 
-export default consolidateRecipeProperties;
+export default consolidateRecipeProperties; 

@@ -1,6 +1,6 @@
 import { MATCH_HTML_TAGS, MATCH_MULTI_SPACE } from './regex';
 
-const cleanIngredientAmounts = (line) => line
+const cleanIngredientAmounts = (line: string): string => line
   .replace(/¼/g, '1/4')
   .replace(/½/g, '1/2')
   .replace(/¾/g, '3/4')
@@ -9,4 +9,4 @@ const cleanIngredientAmounts = (line) => line
   .replace(MATCH_MULTI_SPACE, ' ')
   .trim();
 
-export default cleanIngredientAmounts;
+export default cleanIngredientAmounts; 

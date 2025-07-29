@@ -6,7 +6,14 @@ import transformToCleanString from './transformToCleanString';
 import transformInstructions from './transformInstructions';
 import transformIngredients from './transformIngredients';
 
-const propertyTransformerMap = {
+// Type for transformer functions
+type TransformerFunction = (value: any, key?: string) => any;
+
+interface PropertyTransformerMap {
+  [key: string]: TransformerFunction;
+}
+
+const propertyTransformerMap: PropertyTransformerMap = {
   name: transformToString,
   image: transformImage, // can just be string OR object with url, caption, width, height, thumbnail can be an array of strings
   description: transformToCleanString,
@@ -25,4 +32,4 @@ const propertyTransformerMap = {
   keywords: transformToList,
 };
 
-export default propertyTransformerMap;
+export default propertyTransformerMap; 

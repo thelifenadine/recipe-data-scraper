@@ -1,23 +1,38 @@
 import cleanIngredientAmounts from '../utils/cleanIngredientAmounts';
 import logger from '../utils/logger';
 
-const transformIngredients = (value) => {
+interface MicrodataIngredientItem {
+  properties: {
+    name?: string[];
+    amount?: string[];
+  };
+}
+
+interface MicrodataIngredientsValue {
+  [key: string]: MicrodataIngredientItem;
+}
+
+type IngredientsValue = string[] | MicrodataIngredientsValue;
+
+const transformIngredients = (value: IngredientsValue): string[] => {
   // jsonld
-  if (value && typeof value[0] === 'string') {
+  if (Array.isArray(value) && value.length > 0 && typeof value[0] === 'string') {
     return value.map(item => cleanIngredientAmounts(item));
   }
 
   // array of objects (microdata)
-  const mappedItems = [];
+  const mappedItems: string[] = [];
 
-  Object.entries(value).forEach(([, item]) => {
+  Object.entries(value as MicrodataIngredientsValue).forEach(([, item]) => {
     if (item.properties) {
       const { name, amount } = item.properties;
       if (name || amount) {
         const _name = name && name[0];
         const _amount = amount && amount[0];
         const singleLine = _amount ? `${_amount} ${_name}` : _name;
-        mappedItems.push(cleanIngredientAmounts(singleLine));
+        if (singleLine) {
+          mappedItems.push(cleanIngredientAmounts(singleLine));
+        }
       }
     }
   });
@@ -30,4 +45,4 @@ const transformIngredients = (value) => {
   return [];
 };
 
-export default transformIngredients;
+export default transformIngredients; 

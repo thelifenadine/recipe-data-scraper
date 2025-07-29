@@ -1,11 +1,16 @@
 import logger from '../utils/logger';
 
-function transformImage(value) {
+interface ImageObject {
+  url: string;
+  [key: string]: any;
+}
+
+function transformImage(value: string | ImageObject | any[] | any): string | any {
   if (typeof value === 'string') {
     return value;
   }
 
-  if (value.url) {
+  if (value && typeof value === 'object' && 'url' in value) {
     return value.url;
   }
 
@@ -17,4 +22,4 @@ function transformImage(value) {
   return value;
 }
 
-export default transformImage;
+export default transformImage; 

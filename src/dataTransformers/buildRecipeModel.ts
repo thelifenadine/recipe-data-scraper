@@ -1,19 +1,24 @@
 import consolidateRecipeProperties from './consolidateRecipeProperties';
 import propertyTransformerMap from './propertyTransformerMap';
+import { Recipe } from '../types';
 
-const buildRecipeModel = (prospectiveProperties) => {
+interface ProspectiveProperties {
+  [key: string]: any;
+}
+
+const buildRecipeModel = (prospectiveProperties: ProspectiveProperties): Partial<Recipe> => {
   const recipe = consolidateRecipeProperties(prospectiveProperties);
 
   // parse and transform the property values
-  const transformedRecipe = {};
+  const transformedRecipe: Partial<Recipe> = {};
   Object.entries(recipe).forEach(([key, value]) => {
     const propertyTransformer = propertyTransformerMap[key];
     if (propertyTransformer && value) {
-      transformedRecipe[key] = propertyTransformer(value, key);
+      (transformedRecipe as any)[key] = propertyTransformer(value, key);
     }
   });
 
   return transformedRecipe;
 };
 
-export default buildRecipeModel;
+export default buildRecipeModel; 
