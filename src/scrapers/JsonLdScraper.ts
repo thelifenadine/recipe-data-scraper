@@ -13,23 +13,39 @@ class JsonLdScraper extends Scraper implements IJsonLdScraper {
     super(chtml);
   }
 
+  private isRecipeType(type: unknown): boolean {
+    if (!type) return false;
+    
+    if (type === 'Recipe') return true;
+
+    if (Array.isArray(type)) {
+      return type.indexOf('Recipe') !== -1;
+    }
+    
+    return false;
+  }
+
   testForMetadata(): void {
     const json: JsonLdRecipe[] = [];
     const jsonLdFromHtml = this.chtml('script[type="application/ld+json"]');
 
-    Object.entries(jsonLdFromHtml).forEach(([, item]) => {
-      let contents: JsonLdRecipe | undefined;
+    // Properly iterate over only the DOM elements, not all cheerio object properties
+    jsonLdFromHtml.each((_, element) => {
       try {
-        if (item && 'children' in item && item.children && item.children[0] && 'data' in item.children[0]) {
-          contents = JSON.parse((item.children[0] as any).data);
+        // Access the text content of the script tag directly
+        const scriptContent = this.chtml(element).text().trim();
+        if (!scriptContent) return;
+
+        const parsedContent = JSON.parse(scriptContent);
+        
+        // Validate that it's a reasonable JSON-LD object
+        if (parsedContent && typeof parsedContent === 'object') {
+          json.push(parsedContent as JsonLdRecipe);
         }
       } catch (e) {
         logger('JsonLd: error parsing the json data', e);
         // Fail silently, in case there are valid tags
         return;
-      }
-      if (contents) {
-        json.push(contents);
       }
     });
 
@@ -45,21 +61,23 @@ class JsonLdScraper extends Scraper implements IJsonLdScraper {
     if (!this.meta) return;
 
     if (Array.isArray(this.meta)) {
-      // Handle array case
-      this.recipeItem = this.meta.find(item => item['@type'] === 'Recipe') || null;
+      // Handle array of JSON-LD objects
+      this.recipeItem = this.meta.find(item => this.isRecipeType(item?.['@type'])) || null;
       return;
     }
 
-    if (this.meta['@type'] === 'Recipe') {
-      // nytimes, food.com, bonappetite, ohsheglows, simplyrecipes
+    if (this.isRecipeType(this.meta['@type'])) {
+      // Direct Recipe object: nytimes, food.com, bonappetite, ohsheglows, simplyrecipes, allrecipes
       this.recipeItem = this.meta;
       return;
     }
     
-    // @graph: king arthur, 12tomatoes, sallysbaking, cookie&kate
-    // other: martha stewart, foodnetwork, eatingwell, allrecipes, myrecipes, seriouseats, skinnytaste
+    // Handle @graph structure: king arthur, 12tomatoes, sallysbaking, cookie&kate
+    // or other nested structures: martha stewart, foodnetwork, eatingwell, myrecipes, seriouseats, skinnytaste
     const graphLevel = this.meta['@graph'] || this.meta;
-    this.recipeItem = Object.values(graphLevel).find((item: any) => (item['@type'] === 'Recipe')) as JsonLdRecipe || null;
+    this.recipeItem = Object.values(graphLevel).find((item: any) => 
+      this.isRecipeType(item?.['@type'])
+    ) as JsonLdRecipe || null;
   }
 }
 

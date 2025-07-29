@@ -15,8 +15,25 @@ export default async (url: string, options: ScrapingOptions = {}): Promise<Recip
   let chtml;
 
   try {
-    // load html from scraped url
-    const resp = await axios(url);
+    // load html from scraped url with site-specific User-Agent handling
+    const requestConfig: any = { url };
+    const hostname = new URL(url).hostname;
+
+    // Sites that block axios User-Agent and need browser User-Agent
+    const browserUserAgentSites = [
+      'www.foodnetwork.com',
+      'foodnetwork.com',
+      'www.saveur.com',
+      'saveur.com'
+    ];
+
+    if (browserUserAgentSites.includes(hostname)) {
+      requestConfig.headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+      };
+    }
+
+    const resp = await axios(requestConfig);
     chtml = load(resp.data);
   } catch {
     throw new Error(errorMessage);
@@ -36,7 +53,7 @@ export default async (url: string, options: ScrapingOptions = {}): Promise<Recip
       url,
     };
   } catch (error: unknown) {
-    logger('main:JsonLdScraper', {
+    logger('JsonLdScraper failed', {
       ...(error as object),
       url,
     });
@@ -56,7 +73,7 @@ export default async (url: string, options: ScrapingOptions = {}): Promise<Recip
       url,
     };
   } catch (error: unknown) {
-    logger('main:MicrodataScraper', {
+    logger('MicrodataScraper failed', {
       ...(error as object),
       url,
     });
